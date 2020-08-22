@@ -51,3 +51,5 @@ class globalSettings:
     helper_threshold = 1.5
     max_options = 6
     select_border = 0
+
+    n_legs = 4
