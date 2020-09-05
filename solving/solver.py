@@ -34,18 +34,14 @@ class Solver:
         self.n_exterior_pieces = len(self.data.corners) + len(self.data.edges)
         self.loc_type, self.loc_type_detail = locTypeInit(self.x_limit, self.y_limit)
         self.leg_points = [0, 9, 19, 26, 30, 34, 40, 45, 54]
-        """
-        self.leg_points = [0,
-                           round(0.25*self.n_exterior_pieces),
-                           round(0.5*self.n_exterior_pieces),
-                           round(0.75*self.n_exterior_pieces),
-                           self.n_exterior_pieces,
-                           round(0.25*(self.n_pieces-self.n_exterior_pieces)),
-                           round(0.5*(self.n_pieces-self.n_exterior_pieces)),
-                           round(0.75*(self.n_pieces-self.n_exterior_pieces)),
-                           self.n_pieces]
-        """
         self.n_legs = len(self.leg_points)-1
+        if self.data.puzzle_columns < self.data.puzzle_rows:
+            self.short = self.data.puzzle_columns
+            self.long = self.data.puzzle_rows
+        else:
+            self.short = self.data.puzzle_rows
+            self.long = self.data.puzzle_columns
+
         self.hardReset()
 
     def hardReset(self):
@@ -142,13 +138,13 @@ class Solver:
                 print("Now solving for space", space)
             if self.loc_type[y][x] == 2:  # corner
                 if self.loc_type_detail[y][x] == 1:  # starting piece
-                    corner_index = 0
-                    piece = self.processed_corners[corner_index]
-                    rotation = loc_type_detail_to_rotation(self.loc_type_detail[y][x])
-                    score = 0
-                    option = Option(piece, rotation, score)
                     options = []
-                    options.append(option)
+                    rotation = loc_type_detail_to_rotation(self.loc_type_detail[y][x])
+                    for index in range(len(self.processed_corners)):
+                        piece = self.processed_corners[index]
+                        score = 1 + (0.01*index)
+                        option = Option(piece, rotation, score)
+                        options.append(option)
                     choice = 0
                     step = Step(space, options, choice)
                 else:
@@ -166,9 +162,6 @@ class Solver:
                 print("Progress:", self.placement_num, "/", self.n_pieces)
             if self.settings.show_incremental_solution:
                 displaySolution(createSolution(self.data, self), self.data.av_length, self.x_limit, self.y_limit, self.settings)
-######################################
-# Below this point is final_step
-######################################
 
     def solveStep(self, space, pieces):
         """When provided with a location in the puzzle and list of pieces, it will find the best piece to put in the space."""
