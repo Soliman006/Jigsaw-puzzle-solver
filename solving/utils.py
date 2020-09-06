@@ -58,7 +58,7 @@ def setProcessedLists(corners, edges, interior):
     return processed_corners, processed_edges, processed_interior
 
 
-def locTypeInit(x_limit, y_limit):
+def locTypeInit(x_limit, y_limit, short):
     # Location type
     loc_type = np.full((y_limit, x_limit), 0)
     loc_type[0][0] = 2
@@ -73,6 +73,7 @@ def locTypeInit(x_limit, y_limit):
         loc_type[y][0] = 1
     for y in range(1, np.size(loc_type, 0) - 1):
         loc_type[y][np.size(loc_type, 1) - 1] = 1
+    loc_type[0][short - 1] = 3
     # Detailed location type
     loc_type_detail = np.full((y_limit, x_limit), 0)
     loc_type_detail[0][0] = 1
@@ -92,11 +93,11 @@ def locTypeInit(x_limit, y_limit):
 
 def priorityInit(x_limit, y_limit):
     priority = np.full((y_limit, x_limit), 1)
-    priority[y_limit - 1][:] = 4
     for y in range(y_limit):
-        priority[y][0] = 5
-        priority[y][x_limit - 1] = 6
-    priority[0][:] = 6
+        priority[y][0] = 8 # left
+        priority[y][x_limit - 1] = 4 # right
+    priority[y_limit - 1][:] = 6 # bottom
+    priority[0][:] = 10 # top
     return priority
 
 

@@ -28,20 +28,24 @@ class Solver:
         """Initialises the puzzle solver with the extracted information."""
         self.data = data
         self.settings = settings
-        self.x_limit = self.data.puzzle_columns
-        self.y_limit = self.data.puzzle_rows
         self.n_pieces = len(self.data.piece_contours)
         self.n_exterior_pieces = len(self.data.corners) + len(self.data.edges)
-        self.loc_type, self.loc_type_detail = locTypeInit(self.x_limit, self.y_limit)
-        self.leg_points = [0, 9, 19, 26, 30, 34, 40, 45, 54]
-        self.n_legs = len(self.leg_points)-1
         if self.data.puzzle_columns < self.data.puzzle_rows:
             self.short = self.data.puzzle_columns
             self.long = self.data.puzzle_rows
         else:
             self.short = self.data.puzzle_rows
             self.long = self.data.puzzle_columns
-
+        self.leg_points = []
+        self.leg_points.append(0)
+        self.leg_points.append(self.short)
+        self.leg_points.append(self.short+self.long-1)
+        self.leg_points.append((2*self.short)+self.long-2)
+        self.leg_points.append(self.n_exterior_pieces)
+        for i in range(1, self.long-3):
+            self.leg_points.append(self.n_exterior_pieces + (i*(self.short-2)))
+        self.leg_points.append(self.n_pieces)
+        self.n_legs = len(self.leg_points)-1
         self.hardReset()
 
     def hardReset(self):
@@ -50,7 +54,10 @@ class Solver:
 
     def reset(self):
         """Clears any existing steps taken in attempting to solve the puzzle."""
+        self.x_limit = self.long
+        self.y_limit = self.long
         self.memory = []
+        self.loc_type, self.loc_type_detail = locTypeInit(self.x_limit, self.y_limit, self.short)
         # Create an array to store the piece number of a piece that is successfully placed in that cell:
         self.loc = np.full((self.y_limit, self.x_limit), -1)
         # Array to store rotation for solution piece
@@ -82,8 +89,6 @@ class Solver:
         self.journey = self.solveJourney()
         if len(self.memory) == self.n_pieces:
             print("Puzzle Solved")
-            self.solution_bgr, solution_contours = createBGRSolution(self.data, self)
-            displayBGRSolution(self.solution_bgr, self.data.av_length, self.x_limit, self.y_limit, self.settings)
         else:
             print("Puzzle Cannot Be Solved!")
 
@@ -91,15 +96,70 @@ class Solver:
         """function for finding the most optimal Journey in which to complete the puzzle."""
         print("solveJourney")
         self.legs = []
+        self.path_choice = []
         for i_leg in range(self.n_legs):
-            leg_start = self.leg_points[i_leg]
-            leg_end = self.leg_points[i_leg + 1]
-            leg = self.solveLeg(leg_start, leg_end)
-            self.legs.append(leg)
+            self.path_choice.append(0)
+        while True:
+            i = len(self.legs)
+            leg_start = self.leg_points[i]
+            leg_end = self.leg_points[i + 1]
+            ranked_paths = self.solveLeg(leg_start, leg_end)
+            if self.flags.backtrack:
+                self.flags.backtrack = False
+                i_leg = self.legBacktrace()
+                if i_leg == -1:
+                    break
+                leg = self.legs[i_leg][self.path_choice[i_leg]][1]
+                for j in range(i_leg+1,self.n_legs):
+                    self.path_choice[j] = 0
+                temp_legs = self.legs
+                self.legs = []
+                for k in range(i_leg):
+                    self.legs.append(temp_legs[k])
+                print("backtracking to leg", i_leg, "path", self.path_choice[i_leg])
+            else:
+                self.legs.append(ranked_paths)
+                print("len(ranked_paths)", len(ranked_paths))
+                leg = ranked_paths[0][1]
             final_step = len(leg)-1
             final_option = leg[final_step].choice
             self.memory = leg
             self.backtracker(final_step, final_option)
+            if len(self.memory) == self.n_pieces:
+                while True:
+                    print("Puzzle Solved")
+                    self.solution_bgr, solution_contours = createBGRSolution(self.data, self)
+                    displayBGRSolution(self.solution_bgr, self.data.av_length, self.x_limit, self.y_limit, self.settings)
+                    print("Is this the correct solution? (y/n)")
+                    # get input from user
+                    inputString = input()
+                    if inputString == 'y':
+                        return self.legs
+                    else:
+                        if inputString == 'n':
+                            self.selection = inputString
+                            print('trying again')
+                        else:
+                            print('Invalid entry, assuming no')
+                        i_leg = self.legBacktrace()
+                        print("old len(self.legs)", len(self.legs), "i_leg", i_leg)
+                        if i_leg == -1:
+                            return self.legs
+                        leg = self.legs[i_leg][self.path_choice[i_leg]][1]
+                        for j in range(i_leg+1,self.n_legs):
+                            self.path_choice[j] = 0
+                        temp_legs = self.legs
+                        self.legs = []
+                        for k in range(i_leg+1):
+                            self.legs.append(temp_legs[k])
+                        print("new len(self.legs)", len(self.legs))
+                        print("backtracking to leg", i_leg, "path", self.path_choice[i_leg])
+                        final_step = len(leg)-1
+                        final_option = leg[final_step].choice
+                        self.memory = leg
+                        self.backtracker(final_step, final_option)
+                        if i_leg != self.n_legs-1:
+                            break
         return self.legs
 
     def solveLeg(self, leg_start, leg_end):
@@ -111,14 +171,19 @@ class Solver:
             final_step, final_option = self.backtrace(self.memory)
             if final_step < leg_start:
                 print("Number of paths tried", len(self.paths))
-                ranked_paths = rankPaths(self.paths, self.settings)
-                leg = ranked_paths[0][1]
-                self.flags.backtrack = False
-                return leg
+                if len(self.paths) == 0:
+                    self.flags.backtrack = True
+                    return -1
+                else:
+                    ranked_paths = rankPaths(self.paths, self.settings)
+                    leg = ranked_paths[0][1]
+                    self.flags.backtrack = False
+                    return ranked_paths
             if self.flags.path_complete:
                 self.paths.append(path)
                 self.backtracker(final_step, final_option)
                 self.flags.path_complete = False
+                self.flags.backtrack = False
             if self.flags.backtrack:
                 self.backtracker(final_step, final_option)
                 self.flags.backtrack = False
@@ -136,6 +201,9 @@ class Solver:
             if self.settings.show_current_space_text:
                 print(" ")
                 print("Now solving for space", space)
+            if self.loc_type[y][x] == 3: # corner or edge
+                processed_exterior = self.processed_corners + self.processed_edges
+                step = self.solveStep(space, processed_exterior)
             if self.loc_type[y][x] == 2:  # corner
                 if self.loc_type_detail[y][x] == 1:  # starting piece
                     options = []
@@ -282,6 +350,11 @@ class Solver:
         space_y = space[1]
         # for border pieces, check that the straight edge is on the outside
         border_rot = loc_type_detail_to_rotation(self.loc_type_detail[space_y][space_x])
+        if self.loc_type[space_y][space_x] == 3:
+            if piece in self.processed_corners:
+                border_rot = 1
+            else:
+                border_rot = 0
         if ((rotation != border_rot) and (border_rot != -1)):
             return 0
         # matching locks
@@ -334,7 +407,7 @@ class Solver:
         good_matches = []
         matches.sort(key=takeFourth)
         for k in range(len(matches)):
-            if self.settings.helper_threshold*matches[0][3] > matches[k][3]:
+            if self.settings.helper_threshold*matches[0][3] >= matches[k][3]:
                 good_matches.append(matches[k])
         return good_matches
 
@@ -345,12 +418,19 @@ class Solver:
 
     def nextSpace(self):
         """Determines which space in the puzzle to attemp to solve next, based on the priority array."""
-        for i in range(-10, -1):
+        for i in range(-20, -1):
             level = -i
-            for y in range(0, self.y_limit):
+            if self.y_limit >= self.x_limit: # puzzle is tall
+                for y in range(0, self.y_limit):
+                    for x in range(0, self.x_limit):
+                        if self.priority[y][x] == level:
+                            return [x, y]
+            else: # puzzle is wide
                 for x in range(0, self.x_limit):
-                    if self.priority[y][x] == level:
-                        return [x, y]
+                    for y in range(0, self.y_limit):
+                        if self.priority[y][x] == level:
+                            return [x, y]
+
 
     def place(self, step):
         """Command allowing the user to manually force a certain piece into a certain place in the puzzle."""
@@ -362,6 +442,23 @@ class Solver:
         x = space[0]
         y = space[1]
         # delete placed piece from list of available pieces:
+        if self.loc_type[y][x] == 3: # corner or edge
+            if piece in self.processed_corners:
+                self.processed_corners.remove(piece)
+                self.x_limit = self.short
+                self.y_limit = self.long
+            else: # is edge
+                self.processed_edges.remove(piece)
+                self.x_limit = self.long
+                self.y_limit = self.short
+            self.loc_type, self.loc_type_detail = locTypeInit(self.x_limit, self.y_limit, self.short)
+            self.loc = self.loc[:self.y_limit, :self.x_limit]
+            self.rotation = self.rotation[:self.y_limit, :self.x_limit]
+            temp_priority = self.priority
+            self.priority = priorityInit(self.x_limit, self.y_limit)
+            self.priority[0:2, 0:self.short-1] = temp_priority[0:2, 0:self.short-1]
+            self.space = self.space[:self.y_limit, :self.x_limit]
+
         if self.loc_type[y][x] == 2:
             self.processed_corners.remove(piece)
         if self.loc_type[y][x] == 1:
@@ -383,6 +480,14 @@ class Solver:
                 option_number = memory[step].choice + 1
                 return step_number, option_number
         return -1, -1
+
+    def legBacktrace(self):
+        for i in range(len(self.legs)):
+            i_leg = len(self.legs) - 1 - i
+            if self.path_choice[i_leg] != len(self.legs[i_leg]) - 1:
+                self.path_choice[i_leg] = self.path_choice[i_leg] + 1
+                return i_leg
+        return -1
 
     def backtracker(self, final_step, final_option):
         """Undoes solver placements back to a specified option in a specified step."""
