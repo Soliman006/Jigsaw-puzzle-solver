@@ -2,7 +2,8 @@ import numpy as np
 import random
 import math
 from graphics import imshow
-from utils import imageResize, move_bgr
+from utils import imageResize, move_bgr, rotate_bgr
+from maker.utils import move_bgr, rotate_bgr
 import cv2
 import copy
 
@@ -30,12 +31,14 @@ class PuzzleMaker:
         print("The puzzle will have", self.n_pieces, "pieces,", self.n_rows, "rows and", self.n_cols, "columns")
         self.create_pieces()
         self.create_contours()
+        self.random_placement()
 
     def dimensions(self):
         """Finds the optimal number of rows and columns, and the piece side length."""
         aspect_ratio = self.img_input_w / self.img_input_h
         self.n_cols = int(math.floor(self.n_rows * aspect_ratio))
         self.n_pieces = self.n_rows * self.n_cols
+        self.mapping = list(range(0,self.n_pieces))
         self.side_len = int(math.floor(self.img_input_h / self.n_rows))
         self.img_puzzle_h = self.n_rows * self.side_len
         self.img_puzzle_w = self.n_cols * self.side_len
@@ -89,16 +92,28 @@ class PuzzleMaker:
                         contour.append(np.asarray(point))
                 self.contours.append(np.asarray(contour))
 
+    def random_placement(self):
+        random.shuffle(self.mapping)
+        self.angles = []
+        for piece in range(self.n_pieces):
+            angle = random.uniform(0,360)
+            self.angles.append(angle)
+
+
     def overlay(self):
         img_overlay = copy.deepcopy(self.img_input)
-        cv2.drawContours(img_overlay, self.contours, -1, (255, 255, 255), thickness=1)
+        cv2.drawContours(img_overlay, self.contours, -1, (255, 255, 255), thickness=2)
         imshow(imageResize(img_overlay, height=self.settings.disp_height), self.settings.env)
 
     def display_result(self):
         img_result = copy.deepcopy(self.img_result_blank)
+        img_temp = copy.deepcopy(self.img_result_blank)
         for piece in range(len(self.contours)):
-            move_bgr(self.contours[piece], self.img_input, self.centers_orig[piece],
-                     img_result, self.result_grid[piece], self.img_result_blank)
+            random_map = self.mapping[piece]
+            img_temp, contour_new = move_bgr(self.contours[piece], self.img_input, self.centers_orig[piece],
+                     img_temp, self.result_grid[random_map], self.img_result_blank)
+            img_result, contour_new = rotate_bgr(contour_new, img_temp, self.result_grid[random_map],
+                                                        img_result, self.angles[piece], self.img_result_blank)
         imshow(img_result, self.settings.env)
 
     def find_center(self, segments):
@@ -131,7 +146,10 @@ class Piece:
         self.is_in_up = random.choice([True, False])
         self.is_in_left = random.choice([True, False])
         self.is_in_down = random.choice([True, False])
-        self.is_in_right = random.choice([True, False])
+        if not self.is_in_up and not self.is_in_left and not self.is_in_down:
+            self.is_in_right = True
+        else:
+            self.is_in_right = random.choice([True, False])
         self.piece_left = piece_left
         self.piece_up = piece_up
         self.piece_right = piece_right
@@ -185,12 +203,14 @@ class Piece:
         rh = 0.6
         rw = 0.6
         ra = 0.1
-        s = np.array([[0, 0], [+a+ra*random.uniform(-0.5, 0.5), 0], [0.5-w+rw*random.uniform(-0.5, 0.5), h+rh*random.uniform(-0.5, 0.5)],
-                      [0.5+w+rw*random.uniform(-0.5, 0.5), h+rh*random.uniform(-0.5, 0.5)], [1-a+ra*random.uniform(-0.5, 0.5), 0], [1, 0]])
+        var = 0.4
+        var2 = 0.2
+        s = np.array([[0, 0], [+a+ra*random.uniform(-var, var), 0], [0.5-w+rw*random.uniform(-var, var), h+rh*random.uniform(-var, var)],
+                      [0.5+w+rw*random.uniform(-var, var), h+rh*random.uniform(-var, var)], [1-a+ra*random.uniform(-var, var), 0], [1, 0]])
         # Make a random puzzle lock 0,0 to 1,0 up to 1 unit high
         L = self.bezier_curve(s, n_points)
         # Move it and scale it so it is 0.5 wide and flip if is_in
-        L = L+[random.uniform(-0.4, 0.4), 0]
+        L = L+[random.uniform(-var2, var2), 0]
         lock_scale = 3.5
         L = L / lock_scale + np.array([(1/lock_scale), 0])
         if is_in:

@@ -9,7 +9,7 @@ def contourFinder(img_input, img_blank_comp, settings):
     # convert the image to HSV colour space:
     img_hsv = cv2.cvtColor(img_input, cv2.COLOR_BGR2HSV)
     # Next we use thresholding to create a mask that distinguishes between the pieces and the background:
-    mask = cv2.inRange(img_hsv, settings.lower_blue, settings.upper_blue)
+    mask = cv2.inRange(img_hsv, settings.bg_thresh_low, settings.bg_thresh_high)
     # Now invert the mask
     mask_inv = cv2.bitwise_not(mask)
 

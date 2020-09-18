@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 import copy
+import os
 
 
 def imageResize(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -39,6 +40,65 @@ def zoom(image, center, zoom):
     return cropped
 
 
+def retrieveExample(i, settings):
+    i_str = str(i)
+    filename = i_str + '_unsolved.jpg'
+    absolute_path = os.path.join(os.getcwd(), 'datasets', filename)
+    img = cv2.imread(absolute_path, cv2.IMREAD_UNCHANGED)
+    if img is None:
+        filename = i_str + '_unsolved.png'
+        absolute_path = os.path.join(os.getcwd(), 'datasets', filename)
+        img = cv2.imread(absolute_path, cv2.IMREAD_UNCHANGED)
+        if img is None:
+            print("could not find image ",i_str,"_unsolved")
+    # settings
+    if i == 1:
+        settings.bg_thresh_low = hsv_to_cvhsv(180, 50, 45)
+        settings.bg_thresh_high = hsv_to_cvhsv(220, 100, 100)
+        settings.e_contour_smoothing = 0.5
+        settings.score_thresh = 1.72 # if no options are under this then it trigger the backtracker
+        settings.helper_threshold = 1.5 # all options within this multiplier are considered
+        settings.max_options = 3
+    elif i == 2:
+        bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.e_contour_smoothing = 0.5
+        settings.score_thresh = 1.72 # if no options are under this then it trigger the backtracker
+        settings.helper_threshold = 1.5 # all options within this multiplier are considered
+        settings.max_options = 3
+    elif i == 3:
+        bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.compute_height = 993
+        settings.e_contour_smoothing = 0.5
+        settings.score_thresh = 1.72 # if no options are under this then it trigger the backtracker
+        settings.helper_threshold = 1.5 # all options within this multiplier are considered
+        settings.max_options = 3
+    elif i == 4:
+        bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.e_contour_smoothing = 0.5
+        settings.score_thresh = 2.5#1.72 # if no options are under this then it trigger the backtracker
+        settings.helper_threshold = 2#1.5 # all options within this multiplier are considered
+        settings.max_options = 3
+    elif i == 5:
+        bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.e_contour_smoothing = 0.5
+        settings.score_thresh = 1.72 # if no options are under this then it trigger the backtracker
+        settings.helper_threshold = 1.5 # all options within this multiplier are considered
+        settings.max_options = 3
+    return img, settings
+
+def retrieveImage(filename):
+    """Imports one of the built-in example images."""
+    absolute_path = os.path.join(os.getcwd(), 'datasets', filename)
+    img = cv2.imread(absolute_path, cv2.IMREAD_UNCHANGED)
+    if img is None:
+        print("could not find image")
+    return img
+
+
 def cart2pol(x, y):
     """Converts from cartesian to polar coordinates."""
     theta = np.arctan2(y, x)
@@ -65,6 +125,10 @@ def edgeOrientation(piece, edge_type):
                 edge1_index = side
             else:
                 edge2_index = side
+    if edge1_index == 0 and edge2_index == 3:
+        temp = edge1_index
+        edge1_index = edge2_index
+        edge2_index = temp
     return count, edge1_index, edge2_index
 
 

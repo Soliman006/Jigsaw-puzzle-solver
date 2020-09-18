@@ -114,12 +114,11 @@ class Solver:
                     self.path_choice[j] = 0
                 temp_legs = self.legs
                 self.legs = []
-                for k in range(i_leg):
+                for k in range(i_leg+1):
                     self.legs.append(temp_legs[k])
                 print("backtracking to leg", i_leg, "path", self.path_choice[i_leg])
             else:
                 self.legs.append(ranked_paths)
-                print("len(ranked_paths)", len(ranked_paths))
                 leg = ranked_paths[0][1]
             final_step = len(leg)-1
             final_option = leg[final_step].choice
@@ -132,7 +131,8 @@ class Solver:
                     displayBGRSolution(self.solution_bgr, self.data.av_length, self.x_limit, self.y_limit, self.settings)
                     print("Is this the correct solution? (y/n)")
                     # get input from user
-                    inputString = input()
+                    #inputString = input()
+                    inputString = 'y'
                     if inputString == 'y':
                         return self.legs
                     else:
@@ -142,7 +142,6 @@ class Solver:
                         else:
                             print('Invalid entry, assuming no')
                         i_leg = self.legBacktrace()
-                        print("old len(self.legs)", len(self.legs), "i_leg", i_leg)
                         if i_leg == -1:
                             return self.legs
                         leg = self.legs[i_leg][self.path_choice[i_leg]][1]
@@ -152,7 +151,6 @@ class Solver:
                         self.legs = []
                         for k in range(i_leg+1):
                             self.legs.append(temp_legs[k])
-                        print("new len(self.legs)", len(self.legs))
                         print("backtracking to leg", i_leg, "path", self.path_choice[i_leg])
                         final_step = len(leg)-1
                         final_option = leg[final_step].choice
@@ -160,17 +158,24 @@ class Solver:
                         self.backtracker(final_step, final_option)
                         if i_leg != self.n_legs-1:
                             break
+            else:
+                if self.settings.show_leg_BGR:
+                    self.solution_bgr, solution_contours = createBGRSolution(self.data, self)
+                    displayBGRSolution(self.solution_bgr, self.data.av_length, self.x_limit, self.y_limit, self.settings)
         return self.legs
 
     def solveLeg(self, leg_start, leg_end):
         """function for finding the most optimal path in which to complete a leg."""
-        print("solveLeg")
+        #print("solveLeg")
         self.paths = []
         while True:
             path = self.solvePath(leg_end)
             final_step, final_option = self.backtrace(self.memory)
+            if self.flags.path_complete:
+                self.paths.append(path)
             if final_step < leg_start:
-                print("Number of paths tried", len(self.paths))
+                # print("Number of paths tried", len(self.paths))
+                self.flags.path_complete = False
                 if len(self.paths) == 0:
                     self.flags.backtrack = True
                     return -1
@@ -180,7 +185,6 @@ class Solver:
                     self.flags.backtrack = False
                     return ranked_paths
             if self.flags.path_complete:
-                self.paths.append(path)
                 self.backtracker(final_step, final_option)
                 self.flags.path_complete = False
                 self.flags.backtrack = False

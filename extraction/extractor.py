@@ -60,6 +60,13 @@ class ExtractedData:
         if self.settings.show_full_extraction_graphics:
             imshow(imageResize(img_hull_mask_bgr, height=self.settings.disp_height), self.settings.env)
 
+        # convexity
+        if self.settings.show_extraction_headings:
+            print("detecting convexity defects")
+        img_defects, defects_f = convexity(piece_contours, hull, img_mask_bgr, self.settings)
+        if self.settings.show_full_extraction_graphics:
+            imshow(imageResize(img_defects, height=self.settings.disp_height), self.settings.env)
+
         # corner finder
         if self.settings.show_extraction_headings:
             print("finding corners")
@@ -67,13 +74,6 @@ class ExtractedData:
                                                                                              img_mask_bgr, self.settings)
         if self.settings.show_full_extraction_graphics:
             imshow(imageResize(img_corners, height=self.settings.disp_height), self.settings.env)
-
-        # convexity
-        if self.settings.show_extraction_headings:
-            print("detecting convexity defects")
-        img_defects, defects_f = convexity(piece_contours, hull, img_mask_bgr, self.settings)
-        if self.settings.show_full_extraction_graphics:
-            imshow(imageResize(img_defects, height=self.settings.disp_height), self.settings.env)
 
         # center finder
         if self.settings.show_extraction_headings:
@@ -130,6 +130,7 @@ class ExtractedData:
             print("preparing data")
         processed_pieces, img_processed_segments = processedData(all_segments_rotated, img_blank_spaced, processed_edge_types,
                                                                  all_corners_rotated, self.settings)
+        processed_pieces = approxContours(processed_pieces, self.settings.e_contour_smoothing, state=False)
         if self.settings.show_basic_extraction_graphics:
             imshow(imageResize(img_processed_segments, height=self.settings.disp_height), self.settings.env)
 

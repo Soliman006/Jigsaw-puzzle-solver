@@ -206,7 +206,7 @@ def createGIFTransformation(data, puzzle, filename='tranformation_solution.gif')
 
     # create pathways
     paths = []
-    for piece in range(0, puzzle.num_pieces):
+    for piece in range(0, puzzle.n_pieces):
         start_pos = data.centers[grid2orig[piece]]
         path = []
         if puzzle.placed_pieces[piece] == 1:
@@ -225,7 +225,7 @@ def createGIFTransformation(data, puzzle, filename='tranformation_solution.gif')
 
     # create angle trajectory
     transition_angles = []
-    for piece in range(0, puzzle.num_pieces):
+    for piece in range(0, puzzle.n_pieces):
         count, edge1, edge2 = edgeOrientation(grid2orig[piece], data.edge_type)
         start_angle = data.angles[grid2orig[piece]]
         start_angle = start_angle - (90 * edge1)
@@ -283,7 +283,7 @@ def createGIFTransformation(data, puzzle, filename='tranformation_solution.gif')
         if inc == n_frames:
             for i in range(0, 3*fps):
                 img_trans_rgb.append(cropped_rgb)
-    imshow(imageResize(img_solution_bgr, height=puzzle.settings.disp_height))
+    # imshow(imageResize(img_solution_bgr, height=puzzle.settings.disp_height))
     # save GIF
     print("Saving GIF")
     imageio.mimsave(filename, img_trans_rgb, fps=gif_fps)

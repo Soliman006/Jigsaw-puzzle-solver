@@ -1,17 +1,7 @@
 """ Image Import """
 import cv2
 import numpy as np
-import os
 from utils import imageResize
-
-
-def retrieveExample(filename):
-    """Imports one of the built-in example images."""
-    absolute_path = os.path.join(os.getcwd(), 'datasets', filename)
-    img = cv2.imread(absolute_path, cv2.IMREAD_UNCHANGED)
-    if img is None:
-        print("could not find image")
-    return img
 
 
 def imgCapture(img_orig, settings):

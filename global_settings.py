@@ -21,6 +21,7 @@ class globalSettings:
     show_colour_extraction_progress = True
 
     show_incremental_solution = True
+    show_leg_BGR = True
     show_colour_comparison = True
     show_comparison_text = True
     show_selection_text = True
@@ -30,8 +31,8 @@ class globalSettings:
     show_backtracker = False
 
     # "green screen" thresholding
-    lower_blue = hsv_to_cvhsv(180, 50, 45)
-    upper_blue = hsv_to_cvhsv(220, 100, 100)
+    bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+    bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
 
     # epsilon values for thresholding
     e_contour_smoothing = 0

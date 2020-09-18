@@ -55,18 +55,26 @@ def cornerFinder(poi_corner, piece_contours, img_mask_bgr, settings):
         piece_rectangularity = []
         piece_scores = []
         for group in range(len(rectangles[piece])):
-            area = cv2.contourArea(rectangles[piece][group])
-            min_bounding_rectangle = cv2.minAreaRect(rectangles[piece][group])
-            box_points = cv2.boxPoints(min_bounding_rectangle)
-            bounding_area = cv2.contourArea(box_points)
-            if bounding_area == 0:
-                poly_rectangularity = 0
+            sq_ratio = squareness(rectangles[piece][group])
+            if sq_ratio >= 0.75:
+                area = cv2.contourArea(rectangles[piece][group])
+                min_bounding_rectangle = cv2.minAreaRect(rectangles[piece][group])
+                box_points = cv2.boxPoints(min_bounding_rectangle)
+                bounding_area = cv2.contourArea(box_points)
+                if bounding_area == 0:
+                    poly_rectangularity = 0
+                else:
+                    poly_rectangularity = area / bounding_area
+
+                # combine and save
+                score = area * (poly_rectangularity**1.5) * sq_ratio
+                piece_rectangles_area.append(area)
+                piece_rectangularity.append(poly_rectangularity)
+                piece_scores.append(score)
             else:
-                poly_rectangularity = area / bounding_area
-            score = area * (poly_rectangularity**1.5)
-            piece_rectangles_area.append(area)
-            piece_rectangularity.append(poly_rectangularity)
-            piece_scores.append(score)
+                piece_rectangles_area.append(0)
+                piece_rectangularity.append(0)
+                piece_scores.append(0)
         rectangles_area.append(piece_rectangles_area)
         rectangularity.append(piece_rectangularity)
         scores.append(piece_scores)
@@ -80,7 +88,7 @@ def cornerFinder(poi_corner, piece_contours, img_mask_bgr, settings):
     best_rectangles = []
     for piece in range(len(rectangles)):
         best_polygon_contenders = []
-        for group in range(len(rectangles[piece])):
+        for group in range(len(scores[piece])):
             if scores[piece][group] == scores_max[piece]:
                 best_polygon_contenders.append(group)
         best_rectangles.append(rectangles[piece][best_polygon_contenders[0]])
@@ -124,3 +132,26 @@ def cornerFinder(poi_corner, piece_contours, img_mask_bgr, settings):
                          (0, 0, 255), thickness=settings.line_thickness)
 
     return best_rectangles_sorted, best_rectangles_index, av_length, img_corners
+
+def squareness(points):
+    """Doc."""
+    sides = []
+    for index in range(len(points)):
+        distances = []
+        for i in range(len(points)-1):
+            if i is not index:
+                x, y, e = dist(points[index], points[i])
+                distances.append(e)
+        distances.remove(max(distances))
+        sides = sides + distances
+    len_min = min(sides)
+    len_max = max(sides)
+    ratio = len_min/len_max
+    return ratio
+
+def dist(point1, point2):
+    """Calculates the horizontal, vertical and euclidian distance between 2 points."""
+    x_dist = point1[0] - point2[0]
+    y_dist = point1[1] - point2[1]
+    euclidean_dist = np.sqrt((x_dist)**2 + (y_dist)**2)
+    return x_dist, y_dist, euclidean_dist
