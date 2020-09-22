@@ -206,7 +206,7 @@ class Solver:
                 print(" ")
                 print("Now solving for space", space)
             if self.loc_type[y][x] == 3:  # corner or edge
-                processed_exterior = self.processed_corners + self.processed_edges
+                processed_exterior = self.processed_corners  # + self.processed_edges
                 step = self.solveStep(space, processed_exterior)
             if self.loc_type[y][x] == 2:  # corner
                 if self.loc_type_detail[y][x] == 1:  # starting piece
