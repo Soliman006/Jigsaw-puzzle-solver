@@ -71,7 +71,7 @@ def retrieveExample(i):
         settings.e_contour_smoothing = 0.5
         settings.score_thresh = 2.5  # if no options are under this then it trigger the backtracker
         settings.helper_threshold = 2  # all options within this multiplier are considered
-        settings.max_options = 3
+        settings.max_options = 2
     elif i == 5:
         settings.e_contour_smoothing = 0.5
         settings.max_options = 3

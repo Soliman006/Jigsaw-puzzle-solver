@@ -8,13 +8,21 @@ class globalSettings:
 
     def __init__(self):
         self.env = 'JUPYTER'
-        # graphics
+        # --------------------
+        # Graphics Settings
+        # --------------------
+
         self.compute_height = 1000  # image height in pixels for computations
         self.disp_height = 400  # image height in pixels for displaying on screen
         self.line_thickness = 2  # thickness of lines drawn on images
         self.point_radius = 6  # radius of circles drawn on images
         self.font1 = cv2.FONT_HERSHEY_SIMPLEX
 
+        # --------------------
+        # Display Settings
+        # --------------------
+
+        # extraction display settings
         self.show_extraction_headings = True
         self.show_extraction_text = True
         self.show_basic_extraction_graphics = True
@@ -22,6 +30,7 @@ class globalSettings:
         self.show_extracted_colours = True
         self.show_colour_extraction_progress = True
 
+        # solving display settings
         self.show_incremental_solution = True
         self.show_leg_BGR = True
         self.show_colour_comparison = True
@@ -32,7 +41,12 @@ class globalSettings:
         self.show_error_text = True
         self.show_backtracker = False
 
+        # --------------------
+        # Extraction Settings
+        # --------------------
+
         # "green screen" thresholding
+        # default background is pure black
         self.bg_thresh_low = self.hsv_to_cvhsv(0, 0, 0)
         self.bg_thresh_high = self.hsv_to_cvhsv(360, 1, 1)
 
@@ -44,6 +58,10 @@ class globalSettings:
         # pixel grouping for creating colour contours
         self.inc = 6
 
+        # --------------------
+        # Solver Settings
+        # --------------------
+
         # score weighting
         self.score_shape_scalar = 0.052
         self.score_colour_scalar = 441.673
@@ -51,6 +69,7 @@ class globalSettings:
         self.score_mult_shape = 1
         self.score_thresh = 1.5
 
+        # helper
         self.helper = False
         self.helper_threshold = 1.5
         self.max_options = 6
@@ -58,7 +77,9 @@ class globalSettings:
 
         self.n_legs = 4
 
+        # contour interpolation
         self.interpolation_e = 1
+        self.interpolate_ref = True
 
     def hsv_to_cvhsv(self, h, s, v):
         """Converts typical HSV ranges of (0<H<360,0<S<100,0<V<100) to the ranges opencv expects of (0<H<179,0<S<255,0<V<255)"""

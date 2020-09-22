@@ -3,7 +3,7 @@ import copy
 import cv2
 
 from graphics import createSolution, displaySolution
-from solving.utils import loc_type_detail_to_rotation, setProcessedLists, locTypeInit, priorityInit, Option, Step, rankPaths
+from solving.utils import loc_type_detail_to_rotation, setProcessedLists, locTypeInit, priorityInit, Option, Step, rankPaths, interpolate_curve
 
 from graphics import createBGRSolution, displayBGRSolution, imshow
 from solving.comparator import normaliseContours, compareContours, colourClosestDist
@@ -315,6 +315,8 @@ class Solver:
                         if space_piece_ref != -1:  # make sure there is a contour to compare to
                             # reference data
                             contour_ref = self.data.processed_pieces[space_piece_ref][space_side_ref]
+                            if self.settings.interpolate_ref is True:
+                                contour_ref = interpolate_curve(contour_ref, self.settings)
                             colour_curve_ref = self.data.colour_contours[space_piece_ref][space_side_ref]
                             colour_contour_xy_ref = self.data.colour_contours_xy[space_piece_ref][space_side_ref]
                             # candidate data
