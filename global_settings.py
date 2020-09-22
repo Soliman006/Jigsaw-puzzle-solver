@@ -54,3 +54,5 @@ class globalSettings:
     select_border = 0
 
     n_legs = 4
+
+    interpolation_e = 1

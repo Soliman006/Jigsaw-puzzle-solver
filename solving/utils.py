@@ -94,10 +94,10 @@ def locTypeInit(x_limit, y_limit, short):
 def priorityInit(x_limit, y_limit):
     priority = np.full((y_limit, x_limit), 1)
     for y in range(y_limit):
-        priority[y][0] = 8 # left
-        priority[y][x_limit - 1] = 4 # right
-    priority[y_limit - 1][:] = 6 # bottom
-    priority[0][:] = 10 # top
+        priority[y][0] = 8  # left
+        priority[y][x_limit - 1] = 4  # right
+    priority[y_limit - 1][:] = 6  # bottom
+    priority[0][:] = 10  # top
     return priority
 
 
@@ -132,3 +132,34 @@ def rankPaths(paths, settings):
             print(round(score, 6), end=" ")
             print("")
     return ranked_paths
+
+
+def interpolate_curve(curve, settings):
+    n_del = 0
+    n_add = 0
+    for count in range(1, len(curve)):
+        i = count - n_del + n_add
+        d = curve[i] - curve[i-1]
+        if max(abs(d)) == 0:
+            curve = np.delete(curve, i, axis=0)
+            n_del = n_del + 1
+        elif max(abs(d)) > settings.interpolation_e:
+            dx = d[0]
+            dy = d[1]
+            x_sign = int(dx > 0) - int(dx < 0)
+            y_sign = int(dy > 0) - int(dy < 0)
+            new_points = [[0, 0]]
+            if abs(dx) >= abs(dy):
+                ratio = abs(dy)/abs(dx)
+                for k in range(1, abs(dx)):
+                    point = [[curve[i-1][0] + x_sign*k, round(curve[i-1][1] + y_sign*ratio*k)]]
+                    new_points = np.append(new_points, point, axis=0)
+            else:
+                ratio = abs(dx)/abs(dy)
+                for k in range(1, abs(dy)):
+                    point = [[round(curve[i-1][0] + x_sign*ratio*k), curve[i-1][1] + y_sign*k]]
+                    new_points = np.append(new_points, point, axis=0)
+            new_points = np.delete(new_points, 0, axis=0)
+            n_add = n_add + len(new_points)
+            curve = np.insert(curve, i, new_points, axis=0)
+    return curve
