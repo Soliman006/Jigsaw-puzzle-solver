@@ -218,7 +218,7 @@ def compareColourContours(contour1, contour2, colour_curve1, colour_curve2, sett
         img_colour[10:21, w * index:w * index + w] = colour2
         score = score + dist
     score = score / len(contour1)
-    score = score / 441.673  # max possible score is 441, thus convert to range of 0-1.
+    score = score / settings.score_colour_scalar  # max possible score is 441, thus convert to range of 0-1.
     if settings.show_colour_comparison:
         imshow(imageResize(img_colour, height=height), settings.env)
         print(" ")
