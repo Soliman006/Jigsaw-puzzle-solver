@@ -77,10 +77,12 @@ class globalSettings:
         self.select_border = 0
 
         self.n_legs = 4
+        self.start_short = True
 
         # contour interpolation
         self.interpolation_e = 1
         self.interpolate_ref = True
+        self.interpolate_cand = True
 
     def hsv_to_cvhsv(self, h, s, v):
         """Converts typical HSV ranges of (0<H<360,0<S<100,0<V<100) to the ranges opencv expects of (0<H<179,0<S<255,0<V<255)"""

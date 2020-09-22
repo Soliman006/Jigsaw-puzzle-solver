@@ -42,7 +42,7 @@ class Solver:
         self.leg_points.append(self.short+self.long-1)
         self.leg_points.append((2*self.short)+self.long-2)
         self.leg_points.append(self.n_exterior_pieces)
-        for i in range(1, self.long-3):
+        for i in range(1, self.long-2):
             self.leg_points.append(self.n_exterior_pieces + (i*(self.short-2)))
         self.leg_points.append(self.n_pieces)
         self.n_legs = len(self.leg_points)-1
@@ -207,7 +207,10 @@ class Solver:
                 print(" ")
                 print("Now solving for space", space)
             if self.loc_type[y][x] == 3:  # corner or edge
-                processed_exterior = self.processed_corners  # + self.processed_edges
+                if self.settings.start_short is True:
+                    processed_exterior = self.processed_corners
+                else:
+                    processed_exterior = self.processed_corners + self.processed_edges
                 step = self.solveStep(space, processed_exterior)
             if self.loc_type[y][x] == 2:  # corner
                 if self.loc_type_detail[y][x] == 1:  # starting piece
@@ -322,6 +325,8 @@ class Solver:
                             colour_contour_xy_ref = self.data.colour_contours_xy[space_piece_ref][space_side_ref]
                             # candidate data
                             contour_cand = self.data.processed_pieces[piece][(side + rotation) % 4]
+                            if self.settings.interpolate_cand is True:
+                                contour_cand = interpolate_curve(contour_cand, self.settings)
                             colour_curve_cand = self.data.colour_contours[piece][(side + rotation) % 4]
                             colour_contour_xy_cand = self.data.colour_contours_xy[piece][(side + rotation) % 4]
                             # normalisation
@@ -530,6 +535,10 @@ class Solver:
         img_processed_bgr = copy.deepcopy(self.data.img_processed_bgr)
         contour1 = self.data.processed_pieces[piece1][(side1 + rotation1) % 4]
         contour2 = self.data.processed_pieces[piece2][(side2 + rotation2) % 4]
+        if self.settings.interpolate_ref is True:
+            contour1 = interpolate_curve(contour1, self.settings)
+        if self.settings.interpolate_cand is True:
+            contour2 = interpolate_curve(contour2, self.settings)
         contour1, contour2, peak_point1, peak_point2 = normaliseContours(contour1, contour2, self.data.av_length)
         colour_contour_xy1 = self.data.colour_contours_xy[piece1][(side1 + rotation1) % 4]
         colour_contour_xy2 = self.data.colour_contours_xy[piece2][(side2 + rotation2) % 4]
@@ -537,6 +546,7 @@ class Solver:
             colour_contour_xy1, colour_contour_xy2, self.data.av_length)
         colour_curve1 = self.data.colour_contours[piece1][(side1 + rotation1) % 4]
         colour_curve2 = self.data.colour_contours[piece2][(side2 + rotation2) % 4]
+
         score_shape, score_colour, score_total = compareContours(
             contour1, contour2, colour_curve1, colour_curve2, colour_contour_xy1, colour_contour_xy2, self.data.av_length, self.settings)
 

@@ -62,7 +62,8 @@ def retrieveExample(i):
         settings.max_options = 3
     elif i == 2:
         settings.e_contour_smoothing = 0.5
-        settings.max_options = 3
+        settings.max_options = 2
+        settings.interpolate_ref = False
     elif i == 3:
         settings.compute_height = 993
         settings.e_contour_smoothing = 0.5
@@ -72,6 +73,8 @@ def retrieveExample(i):
         settings.score_thresh = 1.9  # if no options are under this then it trigger the backtracker
         settings.helper_threshold = 1.3  # all options within this multiplier are considered
         settings.max_options = 2
+        settings.interpolate_ref = False
+        settings.interpolate_cand = False
     elif i == 5:
         settings.e_contour_smoothing = 0.5
         settings.max_options = 3
