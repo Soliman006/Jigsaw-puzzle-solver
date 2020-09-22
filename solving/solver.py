@@ -110,7 +110,7 @@ class Solver:
                 if i_leg == -1:
                     break
                 leg = self.legs[i_leg][self.path_choice[i_leg]][1]
-                for j in range(i_leg+1,self.n_legs):
+                for j in range(i_leg+1, self.n_legs):
                     self.path_choice[j] = 0
                 temp_legs = self.legs
                 self.legs = []
@@ -131,7 +131,7 @@ class Solver:
                     displayBGRSolution(self.solution_bgr, self.data.av_length, self.x_limit, self.y_limit, self.settings)
                     print("Is this the correct solution? (y/n)")
                     # get input from user
-                    #inputString = input()
+                    # inputString = input()
                     inputString = 'y'
                     if inputString == 'y':
                         return self.legs
@@ -145,7 +145,7 @@ class Solver:
                         if i_leg == -1:
                             return self.legs
                         leg = self.legs[i_leg][self.path_choice[i_leg]][1]
-                        for j in range(i_leg+1,self.n_legs):
+                        for j in range(i_leg+1, self.n_legs):
                             self.path_choice[j] = 0
                         temp_legs = self.legs
                         self.legs = []
@@ -166,7 +166,7 @@ class Solver:
 
     def solveLeg(self, leg_start, leg_end):
         """function for finding the most optimal path in which to complete a leg."""
-        #print("solveLeg")
+        # print("solveLeg")
         self.paths = []
         while True:
             path = self.solvePath(leg_end)
@@ -181,7 +181,7 @@ class Solver:
                     return -1
                 else:
                     ranked_paths = rankPaths(self.paths, self.settings)
-                    leg = ranked_paths[0][1]
+                    # leg = ranked_paths[0][1]
                     self.flags.backtrack = False
                     return ranked_paths
             if self.flags.path_complete:
@@ -205,7 +205,7 @@ class Solver:
             if self.settings.show_current_space_text:
                 print(" ")
                 print("Now solving for space", space)
-            if self.loc_type[y][x] == 3: # corner or edge
+            if self.loc_type[y][x] == 3:  # corner or edge
                 processed_exterior = self.processed_corners + self.processed_edges
                 step = self.solveStep(space, processed_exterior)
             if self.loc_type[y][x] == 2:  # corner
@@ -424,17 +424,16 @@ class Solver:
         """Determines which space in the puzzle to attemp to solve next, based on the priority array."""
         for i in range(-20, -1):
             level = -i
-            if self.y_limit >= self.x_limit: # puzzle is tall
+            if self.y_limit >= self.x_limit:  # puzzle is tall
                 for y in range(0, self.y_limit):
                     for x in range(0, self.x_limit):
                         if self.priority[y][x] == level:
                             return [x, y]
-            else: # puzzle is wide
+            else:  # puzzle is wide
                 for x in range(0, self.x_limit):
                     for y in range(0, self.y_limit):
                         if self.priority[y][x] == level:
                             return [x, y]
-
 
     def place(self, step):
         """Command allowing the user to manually force a certain piece into a certain place in the puzzle."""
@@ -446,12 +445,12 @@ class Solver:
         x = space[0]
         y = space[1]
         # delete placed piece from list of available pieces:
-        if self.loc_type[y][x] == 3: # corner or edge
+        if self.loc_type[y][x] == 3:  # corner or edge
             if piece in self.processed_corners:
                 self.processed_corners.remove(piece)
                 self.x_limit = self.short
                 self.y_limit = self.long
-            else: # is edge
+            else:  # is edge
                 self.processed_edges.remove(piece)
                 self.x_limit = self.long
                 self.y_limit = self.short
