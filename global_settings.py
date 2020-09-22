@@ -40,6 +40,7 @@ class globalSettings:
         self.show_solver_progress_text = True
         self.show_error_text = True
         self.show_backtracker = False
+        self.show_final_bgr = True
 
         # --------------------
         # Extraction Settings

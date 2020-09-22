@@ -127,8 +127,9 @@ class Solver:
             if len(self.memory) == self.n_pieces:
                 while True:
                     print("Puzzle Solved")
-                    self.solution_bgr, solution_contours = createBGRSolution(self.data, self)
-                    displayBGRSolution(self.solution_bgr, self.data.av_length, self.x_limit, self.y_limit, self.settings)
+                    if self.settings.show_final_bgr is True:
+                        self.solution_bgr, solution_contours = createBGRSolution(self.data, self)
+                        displayBGRSolution(self.solution_bgr, self.data.av_length, self.x_limit, self.y_limit, self.settings)
                     print("Is this the correct solution? (y/n)")
                     # get input from user
                     # inputString = input()
@@ -248,7 +249,7 @@ class Solver:
             choice = 0
             step = Step(space, options, choice)
             return step
-        if (optimal_piece_score > self.settings.score_thresh*n_sides_compared):
+        if (optimal_piece_score > self.settings.score_thresh):
             if self.settings.show_error_text:
                 print("No good matches!")
                 print("Beginning Backtracking Protocol")
@@ -336,6 +337,9 @@ class Solver:
                             rotation_score_colour = rotation_score_colour + side_score_colour
                             rotation_score_total = rotation_score_total + side_score_total
                             n_sides_compared = n_sides_compared + 1
+                    rotation_score_shape = rotation_score_shape / n_sides_compared
+                    rotation_score_colour = rotation_score_colour / n_sides_compared
+                    rotation_score_total = rotation_score_total / n_sides_compared
                     if self.settings.show_comparison_text:
                         print("Comparing piece", piece, "with rotation", rotation, "to space", space,
                               f'scores: shape {rotation_score_shape:.4f} colour {rotation_score_colour:.4f}'
