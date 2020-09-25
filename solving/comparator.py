@@ -113,10 +113,14 @@ def normaliseContour(contour, dir, av_length):
 
 def compareContours(contour1, contour2, colour_curve1, colour_curve2, colour_contour_xy1, colour_contour_xy2, av_length, settings):
     """Takes 2 contours and compares them on shape and colour. A lower score indicates a better match."""
-    score_shape = compareShapeContours(contour1, contour2) / (av_length * settings.score_shape_scalar)
     score_colour = compareColourContours(colour_contour_xy1, colour_contour_xy2, colour_curve1, colour_curve2, settings)
-    score_total = (settings.score_mult_shape * score_shape) + \
-        (settings.score_mult_colour * score_colour)
+    if score_colour > settings.score_colour_thresh:
+        score_shape = -1
+        score_total = 10000000
+    else:
+        score_shape = compareShapeContours(contour1, contour2) / (av_length * settings.score_shape_scalar)
+        score_total = (settings.score_mult_shape * score_shape) + \
+            (settings.score_mult_colour * score_colour)
     return score_shape, score_colour, score_total
 
 
@@ -138,7 +142,14 @@ def closestDist(point1, curve):
     min_e_dist = 100000
     min_x_dist = 100000
     min_y_dist = 100000
-    for index in range(len(curve)):
+    x, y, start_dist = dist(point1, curve[0])
+    x, y, end_dist = dist(point1, curve[-1])
+    if start_dist >= end_dist:
+        dir = 0
+    else:
+        dir = 1
+    for i in range(len(curve)):
+        index = i + dir*(len(curve)-1-2*i)
         point2 = curve[index]
         x_dist, y_dist, e_dist = dist(point1, point2)
         if e_dist < min_e_dist:
@@ -147,6 +158,8 @@ def closestDist(point1, curve):
             min_y_dist = y_dist
             min_point = point2
             min_index = index
+        if e_dist > 3*min_e_dist:
+            break
     return min_index, min_point, min_e_dist, min_x_dist, min_y_dist
 
 

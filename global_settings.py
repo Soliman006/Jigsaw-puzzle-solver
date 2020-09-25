@@ -69,6 +69,8 @@ class globalSettings:
         self.score_mult_colour = 5
         self.score_mult_shape = 1
         self.score_thresh = 1.5
+        self.max_lock_peak_dist = 10
+        self.score_colour_thresh = 0.3
 
         # helper
         self.helper = False

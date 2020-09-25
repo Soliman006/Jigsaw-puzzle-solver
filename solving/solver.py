@@ -6,7 +6,7 @@ from graphics import createSolution, displaySolution
 from solving.utils import loc_type_detail_to_rotation, setProcessedLists, locTypeInit, priorityInit, Option, Step, rankPaths, interpolate_curve
 
 from graphics import createBGRSolution, displayBGRSolution, imshow
-from solving.comparator import normaliseContours, compareContours, colourClosestDist
+from solving.comparator import normaliseContours, compareContours, colourClosestDist, dist
 from solving.updator import incrementPriorities, updateCurves
 from solving.assistant import Assistant
 from utils import takeFourth, imageResize, zoom
@@ -327,31 +327,38 @@ class Solver:
                         space_piece_ref = self.space[space_y][space_x][side][0]
                         space_side_ref = self.space[space_y][space_x][side][1]
                         if space_piece_ref != -1:  # make sure there is a contour to compare to
+                            n_sides_compared = n_sides_compared + 1
                             # reference data
                             contour_ref = self.data.processed_pieces[space_piece_ref][space_side_ref]
                             if self.settings.interpolate_ref is True:
                                 contour_ref = interpolate_curve(contour_ref, self.settings)
-                            colour_curve_ref = self.data.colour_contours[space_piece_ref][space_side_ref]
-                            colour_contour_xy_ref = self.data.colour_contours_xy[space_piece_ref][space_side_ref]
                             # candidate data
                             contour_cand = self.data.processed_pieces[piece][(side + rotation) % 4]
                             if self.settings.interpolate_cand is True:
                                 contour_cand = interpolate_curve(contour_cand, self.settings)
-                            colour_curve_cand = self.data.colour_contours[piece][(side + rotation) % 4]
-                            colour_contour_xy_cand = self.data.colour_contours_xy[piece][(side + rotation) % 4]
                             # normalisation
                             contour_ref, contour_cand, peak_point_ref, peak_point_cand\
                                 = normaliseContours(contour_ref, contour_cand, self.data.av_length)
-                            colour_contour_xy_ref, colour_contour_xy_cand, colour_peak_point_ref, colour_peak_point_cand\
-                                = normaliseContours(colour_contour_xy_ref, colour_contour_xy_cand, self.data.av_length)
-                            # comparison
-                            side_score_shape, side_score_colour, side_score_total\
-                                = compareContours(contour_ref, contour_cand, colour_curve_ref, colour_curve_cand, colour_contour_xy_ref,
-                                                  colour_contour_xy_cand, self.data.av_length, self.settings)
-                            rotation_score_shape = rotation_score_shape + side_score_shape
-                            rotation_score_colour = rotation_score_colour + side_score_colour
-                            rotation_score_total = rotation_score_total + side_score_total
-                            n_sides_compared = n_sides_compared + 1
+                            x_dist, y_dist, peak_dist = dist(peak_point_ref, peak_point_cand)
+                            if peak_dist > self.settings.max_lock_peak_dist:
+                                rotation_score_total = 10000000
+                            else:
+                                # reference data
+                                colour_curve_ref = self.data.colour_contours[space_piece_ref][space_side_ref]
+                                colour_contour_xy_ref = self.data.colour_contours_xy[space_piece_ref][space_side_ref]
+                                # candidate data
+                                colour_curve_cand = self.data.colour_contours[piece][(side + rotation) % 4]
+                                colour_contour_xy_cand = self.data.colour_contours_xy[piece][(side + rotation) % 4]
+                                # normalisation
+                                colour_contour_xy_ref, colour_contour_xy_cand, colour_peak_point_ref, colour_peak_point_cand\
+                                    = normaliseContours(colour_contour_xy_ref, colour_contour_xy_cand, self.data.av_length)
+                                # comparison
+                                side_score_shape, side_score_colour, side_score_total\
+                                    = compareContours(contour_ref, contour_cand, colour_curve_ref, colour_curve_cand, colour_contour_xy_ref,
+                                                      colour_contour_xy_cand, self.data.av_length, self.settings)
+                                rotation_score_shape = rotation_score_shape + side_score_shape
+                                rotation_score_colour = rotation_score_colour + side_score_colour
+                                rotation_score_total = rotation_score_total + side_score_total
                     rotation_score_shape = rotation_score_shape / n_sides_compared
                     rotation_score_colour = rotation_score_colour / n_sides_compared
                     rotation_score_total = rotation_score_total / n_sides_compared
