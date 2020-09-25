@@ -228,7 +228,7 @@ class Solver:
                     rotation = loc_type_detail_to_rotation(self.loc_type_detail[y][x])
                     for index in range(len(self.processed_corners)):
                         piece = self.processed_corners[index]
-                        score = 1 + (0.01*index)
+                        score = 1 + (0.00001*index)
                         option = Option(piece, rotation, score)
                         options.append(option)
                     choice = 0
