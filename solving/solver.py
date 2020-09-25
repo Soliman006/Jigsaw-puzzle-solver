@@ -38,11 +38,21 @@ class Solver:
             self.long = self.data.puzzle_columns
         self.leg_points = []
         self.leg_points.append(0)
+        if self.short > 8:
+            self.leg_points.append(int(self.short/2))
         self.leg_points.append(self.short)
+        if self.short > 8:
+            self.leg_points.append(int(self.short+(self.long-1)/2))
         self.leg_points.append(self.short+self.long-1)
+        if self.short > 8:
+            self.leg_points.append(int(1.5*self.short+self.long-2))
         self.leg_points.append((2*self.short)+self.long-2)
+        if self.short > 8:
+            self.leg_points.append(int(self.n_exterior_pieces-(self.long/2)))
         self.leg_points.append(self.n_exterior_pieces)
         for i in range(1, self.long-2):
+            if self.short > 8:
+                self.leg_points.append(int(self.n_exterior_pieces + (i*(self.short-2)) - self.short/2))
             self.leg_points.append(self.n_exterior_pieces + (i*(self.short-2)))
         self.leg_points.append(self.n_pieces)
         self.n_legs = len(self.leg_points)-1
