@@ -44,7 +44,7 @@ def zoom(image, center, zoom):
 def retrieveExample(i):
     settings = globalSettings()
     i_str = str(i)
-    filename = i_str + '_unsolved.jpg'
+    filename = i_str #+ '_unsolved.jpg'
     absolute_path = os.path.join(os.getcwd(), 'datasets', filename)
     img = cv2.imread(absolute_path, cv2.IMREAD_UNCHANGED)
     if img is None:
