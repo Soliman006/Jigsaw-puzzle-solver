@@ -61,29 +61,33 @@ def aligner(radius_max, best_rectangles_sorted, corners, edges, interior, piece_
             den = x2 - x1
             if den != 0:
                 theta_r = np.arctan(num / den)
-                theta_d = theta_r * 180 / (np.pi)
-                theta_d = theta_d % 90
-                angle.append(theta_d)
-                if theta_d < 20:
-                    low_flag = 1
-                if theta_d > 70:
-                    high_flag = 1
             else:
-                theta_r = np.pi / 2
-                print("Divide by 0 encountered at piece", piece, "side", side, "Don't worry it has been handled")
+                if num > 0:
+                    theta_r = np.pi / 2
+                    print("positive divide by 0 encountered at piece", piece, "side", side, "Don't worry it has been handled")
+                else:
+                    theta_r = -np.pi / 2
+                    print("negative divide by 0 encountered at piece", piece, "side", side, "Don't worry it has been handled")
+            theta_d = theta_r * 180 / (np.pi)
+            theta_d = theta_d % 90
+            angle.append(theta_d)
+            if theta_d < 20:
+                low_flag = 1
+            if theta_d > 70:
+                high_flag = 1
             if side == 0:
                 if ((num > 0) and (den > 0)):  # pos
-                    rot = 180  # 180 for 2 and 4
+                    rot = 180
                 if ((num > 0) and (den < 0)):  # neg
                     rot = 270
                 if ((num < 0) and (den < 0)):  # pos
-                    rot = 45  # nothing here
+                    rot = 45
                 if ((num < 0) and (den > 0)):  # neg
-                    rot = 45  # nothing here
+                    rot = 45
                 if ((num > 0) and (den == 0)):  # +ve pi/2
-                    rot = 180  # nothing here
+                    rot = 270
                 if ((num < 0) and (den == 0)):  # -ve pi/2
-                    rot = 270  # nothing here
+                    rot = 270
         angle0 = angle[0]
         if low_flag and high_flag:
             print("piece", piece, "has dual flags")

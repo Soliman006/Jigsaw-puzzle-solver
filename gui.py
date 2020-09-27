@@ -14,10 +14,10 @@ class GUI:
 
     def main_window_init(self):
         self.window = tk.Tk()
-        self.window.title("Anaerobic Digestion Model")
+        self.window.title("Jigsaw Puzzle Solver")
         self.window.geometry("900x900+10+20")
         self.main_controls(10, 10)
-        self.output_selection(200, 200)
+        self.extractor_settings(200, 200)
 
     def main_controls(self, x0, y0):
         self.button_run = tk.Button(self.window, text="RUN", fg="black", command=self.run)
@@ -29,13 +29,16 @@ class GUI:
         self.button_quit = tk.Button(self.window, text="QUIT", fg="red", command=self.window.destroy)
         self.button_quit.place(x=x0+100, y=y0)
 
-    def output_selection(self, x0, y0):
-        self.v1 = tk.BooleanVar()
-        self.v2 = tk.BooleanVar()
-        self.checkbox_1 = tk.Checkbutton(self.window, text="Option 1", variable=self.v1)
-        self.checkbox_2 = tk.Checkbutton(self.window, text="Option 2", variable=self.v2)
-        self.checkbox_1.place(x=x0+10, y=y0+10)
-        self.checkbox_2.place(x=x0+10, y=y0+50)
+    def extractor_settings(self, x0, y0):
+        x_offset = 10
+        y_offset = 10
+        v_space = 40
+        self.show_extraction_headings = tk.BooleanVar()
+        self.show_extraction_Text = tk.BooleanVar()
+        self.checkbox_e1 = tk.Checkbutton(self.window, text="Show Extraction Headings", variable=self.show_extraction_headings)
+        self.checkbox_e2 = tk.Checkbutton(self.window, text="Show Extraction Text", variable=self.show_extraction_headings)
+        self.checkbox_e1.place(x=x0+x_offset, y=y0+y_offset)
+        self.checkbox_e2.place(x=x0+x_offset, y=y0+y_offset+v_dist)
 
     def run(self):
         print("Running Simulation")
