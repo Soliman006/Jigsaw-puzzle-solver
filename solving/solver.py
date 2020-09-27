@@ -393,7 +393,7 @@ class SolverData:
                 count = count + 1
                 if count == len(best_edge):
                     edge_average = sum_best_edge/(len(best_edge)-2)
-                    if j.options[j.choice].score > self.settings.corner_thres * edge_average:
+                    if j.options[j.choice].score > self.settings.corner_thresh * edge_average:
                         best_score = 10
                 else:
                     sum_best_edge = sum_best_edge + j.options[j.choice].score
