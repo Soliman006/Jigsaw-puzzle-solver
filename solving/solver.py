@@ -6,7 +6,7 @@ from graphics import createSolution, displaySolution
 from solving.utils import loc_type_detail_to_rotation, setProcessedLists, locTypeInit, priorityInit, Option, Step, rankPaths, interpolate_curve
 
 from graphics import createBGRSolution, displayBGRSolution, imshow
-from solving.comparator import normaliseContours, compareContours, colourClosestDist
+from solving.comparator import normaliseContours, compareContours, colourClosestDist, dist
 from solving.updator import incrementPriorities, updateCurves
 from solving.assistant import Assistant
 from utils import takeFourth, imageResize, zoom
@@ -38,11 +38,21 @@ class Solver:
             self.long = self.data.puzzle_columns
         self.leg_points = []
         self.leg_points.append(0)
+        if self.short > 8:
+            self.leg_points.append(int(self.short/2))
         self.leg_points.append(self.short)
+        if self.short > 8:
+            self.leg_points.append(int(self.short+(self.long-1)/2))
         self.leg_points.append(self.short+self.long-1)
+        if self.short > 8:
+            self.leg_points.append(int(1.5*self.short+self.long-2))
         self.leg_points.append((2*self.short)+self.long-2)
+        if self.short > 8:
+            self.leg_points.append(int(self.n_exterior_pieces-(self.long/2)))
         self.leg_points.append(self.n_exterior_pieces)
         for i in range(1, self.long-2):
+            if self.short > 8:
+                self.leg_points.append(int(self.n_exterior_pieces + (i*(self.short-2)) - self.short/2))
             self.leg_points.append(self.n_exterior_pieces + (i*(self.short-2)))
         self.leg_points.append(self.n_pieces)
         self.n_legs = len(self.leg_points)-1
@@ -218,7 +228,7 @@ class Solver:
                     rotation = loc_type_detail_to_rotation(self.loc_type_detail[y][x])
                     for index in range(len(self.processed_corners)):
                         piece = self.processed_corners[index]
-                        score = 1 + (0.01*index)
+                        score = 1 + (0.00001*index)
                         option = Option(piece, rotation, score)
                         options.append(option)
                     choice = 0
@@ -317,31 +327,38 @@ class Solver:
                         space_piece_ref = self.space[space_y][space_x][side][0]
                         space_side_ref = self.space[space_y][space_x][side][1]
                         if space_piece_ref != -1:  # make sure there is a contour to compare to
+                            n_sides_compared = n_sides_compared + 1
                             # reference data
                             contour_ref = self.data.processed_pieces[space_piece_ref][space_side_ref]
                             if self.settings.interpolate_ref is True:
                                 contour_ref = interpolate_curve(contour_ref, self.settings)
-                            colour_curve_ref = self.data.colour_contours[space_piece_ref][space_side_ref]
-                            colour_contour_xy_ref = self.data.colour_contours_xy[space_piece_ref][space_side_ref]
                             # candidate data
                             contour_cand = self.data.processed_pieces[piece][(side + rotation) % 4]
                             if self.settings.interpolate_cand is True:
                                 contour_cand = interpolate_curve(contour_cand, self.settings)
-                            colour_curve_cand = self.data.colour_contours[piece][(side + rotation) % 4]
-                            colour_contour_xy_cand = self.data.colour_contours_xy[piece][(side + rotation) % 4]
                             # normalisation
                             contour_ref, contour_cand, peak_point_ref, peak_point_cand\
                                 = normaliseContours(contour_ref, contour_cand, self.data.av_length)
-                            colour_contour_xy_ref, colour_contour_xy_cand, colour_peak_point_ref, colour_peak_point_cand\
-                                = normaliseContours(colour_contour_xy_ref, colour_contour_xy_cand, self.data.av_length)
-                            # comparison
-                            side_score_shape, side_score_colour, side_score_total\
-                                = compareContours(contour_ref, contour_cand, colour_curve_ref, colour_curve_cand, colour_contour_xy_ref,
-                                                  colour_contour_xy_cand, self.data.av_length, self.settings)
-                            rotation_score_shape = rotation_score_shape + side_score_shape
-                            rotation_score_colour = rotation_score_colour + side_score_colour
-                            rotation_score_total = rotation_score_total + side_score_total
-                            n_sides_compared = n_sides_compared + 1
+                            x_dist, y_dist, peak_dist = dist(peak_point_ref, peak_point_cand)
+                            if peak_dist > self.settings.max_lock_peak_dist:
+                                rotation_score_total = 10000000
+                            else:
+                                # reference data
+                                colour_curve_ref = self.data.colour_contours[space_piece_ref][space_side_ref]
+                                colour_contour_xy_ref = self.data.colour_contours_xy[space_piece_ref][space_side_ref]
+                                # candidate data
+                                colour_curve_cand = self.data.colour_contours[piece][(side + rotation) % 4]
+                                colour_contour_xy_cand = self.data.colour_contours_xy[piece][(side + rotation) % 4]
+                                # normalisation
+                                colour_contour_xy_ref, colour_contour_xy_cand, colour_peak_point_ref, colour_peak_point_cand\
+                                    = normaliseContours(colour_contour_xy_ref, colour_contour_xy_cand, self.data.av_length)
+                                # comparison
+                                side_score_shape, side_score_colour, side_score_total\
+                                    = compareContours(contour_ref, contour_cand, colour_curve_ref, colour_curve_cand, colour_contour_xy_ref,
+                                                      colour_contour_xy_cand, self.data.av_length, self.settings)
+                                rotation_score_shape = rotation_score_shape + side_score_shape
+                                rotation_score_colour = rotation_score_colour + side_score_colour
+                                rotation_score_total = rotation_score_total + side_score_total
                     rotation_score_shape = rotation_score_shape / n_sides_compared
                     rotation_score_colour = rotation_score_colour / n_sides_compared
                     rotation_score_total = rotation_score_total / n_sides_compared

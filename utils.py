@@ -78,6 +78,14 @@ def retrieveExample(i):
     elif i == 5:
         settings.e_contour_smoothing = 0.5
         settings.max_options = 3
+    elif i == 7:
+        settings.bg_thresh_low = hsv_to_cvhsv(23, 3, 60)
+        settings.bg_thresh_high = hsv_to_cvhsv(60, 15, 95)
+    elif i == 8:
+        settings.bg_thresh_low = hsv_to_cvhsv(23, 3, 60)
+        settings.bg_thresh_high = hsv_to_cvhsv(60, 15, 95)
+    elif i == 10:
+        settings.convexity_epsilon = 1000
     return img, settings
 
 
