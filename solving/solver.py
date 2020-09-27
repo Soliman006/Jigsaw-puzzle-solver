@@ -120,7 +120,7 @@ class SolverData:
     def solveborder2(self):
         best_scores = []
         best_edges = []
-        self.setloctype(self.data.puzzle_rows,self.data.puzzle_columns)
+        #self.setloctype(self.data.puzzle_rows,self.data.puzzle_columns)
         corners = self.processed_corners.copy()
         for i in corners:
             best_edge, best_score = self.solvebestfulledge(i)
@@ -179,7 +179,8 @@ class SolverData:
         for i in best_overall_edge:
             self.solution.append(i)
         
-        self.setloctype(self.data.puzzle_columns,self.data.puzzle_rows)
+        #self.setloctype(self.data.puzzle_columns,self.data.puzzle_rows)
+        self.setloctype(self.data.puzzle_rows,self.data.puzzle_columns)
         
         for i in range(self.data.puzzle_rows):
             self.solution[i].space = [0,self.data.puzzle_rows-1-i]
