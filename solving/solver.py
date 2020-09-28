@@ -120,7 +120,7 @@ class SolverData:
     def solveborder2(self):
         best_scores = []
         best_edges = []
-        #self.setloctype(self.data.puzzle_rows,self.data.puzzle_columns)
+        self.setloctype(self.data.puzzle_rows,self.data.puzzle_columns)
         corners = self.processed_corners.copy()
         for i in corners:
             best_edge, best_score = self.solvebestfulledge(i)
@@ -179,8 +179,7 @@ class SolverData:
         for i in best_overall_edge:
             self.solution.append(i)
         
-        #self.setloctype(self.data.puzzle_columns,self.data.puzzle_rows)
-        self.setloctype(self.data.puzzle_rows,self.data.puzzle_columns)
+        self.setloctype(self.data.puzzle_columns,self.data.puzzle_rows)
         
         for i in range(self.data.puzzle_rows):
             self.solution[i].space = [0,self.data.puzzle_rows-1-i]
@@ -293,9 +292,6 @@ class SolverData:
             best_score = min(self.edge_scores)
             best_score_index = np.argmin(self.edge_scores)
             best_edge = self.possible_edges[best_score_index]
-        '''print('best border is number',best_score_index+1,'and the pieces are:')
-        for i in best_edge:
-            print(i.options[i.choice].piece)'''
         return best_edge, best_score
     
     def solvebestcolumn(self,column):
@@ -309,23 +305,7 @@ class SolverData:
                 if self.settings.show_current_space_text:
                     print(" ")
                     print("Now solving for space", space)
-                '''if self.loc_type[y][x] == 2:  # corner
-                    if len(self.memory) == 0:  # starting piece
-                        piece = corner
-                        corner_index = corner
-                        piece = self.processed_corners[corner_index]
-                        rotation = loc_type_detail_to_rotation(self.loc_type_detail[y][x])
-                        score = 0
-                        option = Option(piece, rotation, score)
-                        options = []
-                        options.append(option)
-                        choice = 0
-                        step = Step(space, options, choice)
-                    else:
-                        self.flags.cornerfound = True
-                        continue
-                if self.loc_type[y][x] == 1:  # edge
-                    step = self.solveSpace(space, self.processed_edges)'''
+
                 step = self.solveSpace(space, self.processed_interior)
                 if self.flags.backtrack:
                     self.flags.backtrack = 0    
@@ -463,9 +443,6 @@ class SolverData:
                             colour_contour_xy1, colour_contour_xy2, colour_peak_point1, colour_peak_point2 = normaliseContours(
                                 colour_contour_xy1, colour_contour_xy2, self.data.av_length)
                             
-                            '''side_score_shape, side_score_colour, side_score_total\
-                                = compareContours(contour1, contour2, colour_curve1, colour_curve2, colour_contour_xy1,
-                                                  colour_contour_xy2, self.data.av_length, self.settings)'''
                             side_score_colour = compareColourContours(colour_contour_xy1, colour_contour_xy2, colour_curve1, colour_curve2, self.settings)
                             if side_score_colour > self.settings.score_colour_thresh:
                                 rotation_score_total = 10000000
@@ -514,24 +491,15 @@ class SolverData:
         if self.loc_type[y][x] == 2:
             # corner
             self.processed_corners.remove(piece)
-            '''for index in range(len(self.processed_corners)):
-                if self.processed_corners[index] == piece:
-                    cat_index = index
-            del self.processed_corners[cat_index]'''
+
         if self.loc_type[y][x] == 1:
             # edge
             self.processed_edges.remove(piece)
-            '''for index in range(len(self.processed_edges)):
-                if self.processed_edges[index] == piece:
-                    cat_index = index
-            del self.processed_edges[cat_index]'''
+            
         if self.loc_type[y][x] == 0:
             # interior
             self.processed_interior.remove(piece)
-            '''for index in range(len(self.processed_interior)):
-                if self.processed_interior[index] == piece:
-                    cat_index = index
-            del self.processed_interior[cat_index]'''
+            
         # update the puzzle:
         self.updatePuzzle(space, piece, rotation)
         self.placement_num = self.placement_num + 1
@@ -616,20 +584,7 @@ class SolverData:
         '''for i in closest_dist:
             print(i)'''
         
-        #print("Average of the distances is ",average_dist)
-        '''
-        farpoint = findlockedge(contour1)
-        print(farpoint)
-        lock_left,lock_right = findlocks(contour1,farpoint)
-        print(lock_left,lock_right)'''
-        #print("Contour1:")
-        
-        '''print("Contour2:")
-        farpoint = findlockedge(contour2)
-        print(farpoint)
-        lock_left,lock_right = findlocks(contour2,farpoint)
-        print(lock_left,lock_right)
-        for i in reversed(contour2):
+        '''for i in reversed(contour2):
             print(i)'''
         
         '''score_shape, score_colour, score_total = compareContours(
@@ -732,7 +687,6 @@ class SolverData:
 
     def backtracker(self, final_step, final_option):
         """Undoes solver placements back to a specified option in a specified step."""
-        # TODO don't backtrack into border, instead choose next best border
         memory = copy.deepcopy(self.memory)
         memory[final_step].choice = final_option
         self.reset()
@@ -755,16 +709,6 @@ class SolverData:
         for step in range(final_step + 1):
                 choice = memory[step].choice
                 self.place(memory[step])
-        
-        '''if self.flags.solve_interior == 1:
-            self.reset()
-            for step in range(final_step + 1):
-                choice = memory[step].choice
-                self.place(memory[step])
-        else:
-            for step in range(final_step + 1):
-                choice = memory[step].choice
-                self.place(memory[step])'''
         
         if self.settings.show_incremental_solution:
             displaySolution(createSolution(self.data, self), self.data.av_length, self.x_limit, self.y_limit, self.settings)
