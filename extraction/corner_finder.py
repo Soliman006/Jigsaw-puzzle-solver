@@ -6,32 +6,131 @@ import copy
 from global_settings import globalSettings
 settings = globalSettings()
 
-# here we take the low point count approximate hull contour, and generate polygons for every combination of 4 hull points on a piece:
+
+def remove_locks(poi_index, poi, contour, defects):
+    defect_points = []
+    # find the coordinates of the defect points
+    for i in range(len(defects)):
+        point = contour[defects[i]][0]
+        defect_points.append(point)
+    # find which points are close to one another
+    closest_point = []
+    for i in range(len(defect_points)):
+        min_index, min_point, min_dist = closestDist(i, defect_points)
+        closest_point.append(min_index)
+    # remove duplicates
+    pairs = []
+    duplicates = []
+    for i in range(len(closest_point)):
+        if i not in duplicates:
+            closest = closest_point[i]
+            duplicates.append(closest)
+            pair = [i, closest]
+            pairs.append(pair)
+    # convert pair to contour indexes:
+    contour_pairs = []
+    for i in range(len(pairs)):
+        part1 = pairs[i][0]
+        part2 = pairs[i][1]
+        contour_index1 = int(defects[part1])
+        contour_index2 = int(defects[part2])
+        pair = [contour_index1, contour_index2]
+        contour_pairs.append(pair)
+    # remove the loop around entry
+    max_index, max_val = -1, -1
+    for i in range(len(contour_pairs)):
+        index1 = contour_pairs[i][0]
+        index2 = contour_pairs[i][1]
+        d = abs(index1-index2)
+        if d > max_val:
+            max_index, max_val = i, d
+    del contour_pairs[max_index]
+    poi_index_new = []
+    for i in range(len(poi_index)):
+        entry = poi_index[i][0]
+        poi_index_new.append(entry)
+    poi_new = []
+    for i in range(len(poi)):
+        x = poi[i][0][0]
+        y = poi[i][0][1]
+        point = [x, y]
+        poi_new.append(point)
+    poi_index_new_static = copy.deepcopy(poi_index_new)
+    poi_new_static = copy.deepcopy(poi_new)
+    for i in range(len(contour_pairs)):
+        index1 = contour_pairs[i][0]
+        index2 = contour_pairs[i][1]
+        if index1 < index2:
+            start = index1
+            end = index2
+        else:
+            start = index2
+            end = index1
+        for entry in range(start, end):
+            if entry in poi_index_new:
+                n = poi_index_new_static.index(entry)
+                point = poi_new_static[n]
+                poi_new.remove(point)
+                poi_index_new.remove(entry)
+    return poi_new
 
 
-def cornerFinder(poi_corner, piece_contours, img_mask_bgr, settings):
+def dist(point1, point2):
+    """Calculates the horizontal, vertical and euclidian distance between 2 points."""
+    x_dist = point1[0] - point2[0]
+    y_dist = point1[1] - point2[1]
+    euclidean_dist = np.sqrt((x_dist)**2 + (y_dist)**2)
+    return euclidean_dist
+
+
+def closestDist(i, curve):
+    """Finds the closest point in a list of points to a specified coordinate."""
+    min_point = 100000
+    min_index = 100000
+    min_e_dist = 100000
+    for index in range(len(curve)):
+        if index != i:
+            point2 = curve[index]
+            e_dist = dist(curve[i], point2)
+            if e_dist < min_e_dist:
+                min_e_dist = e_dist
+                min_point = point2
+                min_index = index
+    return min_index, min_point, min_e_dist
+
+
+def cornerFinder(poi_index, poi_corner, piece_contours, img_mask_bgr, defects, settings):
     """Finds the corners of each piece by maximising the area and 'rectangularness' of the 4 point polygon created by the corners."""
     rectangles_index = []
     rectangles = []
     for piece in range(len(poi_corner)):
+        if len(defects[piece]) == 8:
+            poi = remove_locks(poi_index[piece], poi_corner[piece], piece_contours[piece], defects[piece])
+        else:
+            poi = []
+            for i in range(len(poi_corner[piece])):
+                x = poi_corner[piece][i][0][0]
+                y = poi_corner[piece][i][0][1]
+                point = [x, y]
+                poi.append(point)
         piece_rectangles_index = []
         piece_rectangles = []
-        for index1 in range(len(poi_corner[piece])):
-            for index2 in range(len(poi_corner[piece])):
+        for index1 in range(len(poi)):
+            for index2 in range(len(poi)):
                 if index2 == index1:
                     break
-                for index3 in range(len(poi_corner[piece])):
+                for index3 in range(len(poi)):
                     if ((index3 == index1) | (index3 == index2)):
                         break
-                    for index4 in range(len(poi_corner[piece])):
+                    for index4 in range(len(poi)):
                         if ((index4 == index1) | (index4 == index2) | (index4 == index3)):
                             break
                         polygon_index = []
                         polygon = []
-                        pointA = np.asarray(poi_corner[piece][index1][0])
-                        pointB = np.asarray(poi_corner[piece][index2][0])
-                        pointC = np.asarray(poi_corner[piece][index3][0])
-                        pointD = np.asarray(poi_corner[piece][index4][0])
+                        pointA = np.asarray(poi[index1])
+                        pointB = np.asarray(poi[index2])
+                        pointC = np.asarray(poi[index3])
+                        pointD = np.asarray(poi[index4])
                         polygon_index.append(index1)
                         polygon_index.append(index2)
                         polygon_index.append(index3)
@@ -133,6 +232,7 @@ def cornerFinder(poi_corner, piece_contours, img_mask_bgr, settings):
 
     return best_rectangles_sorted, best_rectangles_index, av_length, img_corners
 
+
 def squareness(points):
     """Doc."""
     sides = []
@@ -140,7 +240,7 @@ def squareness(points):
         distances = []
         for i in range(len(points)-1):
             if i is not index:
-                x, y, e = dist(points[index], points[i])
+                e = dist(points[index], points[i])
                 distances.append(e)
         distances.remove(max(distances))
         sides = sides + distances
@@ -148,10 +248,3 @@ def squareness(points):
     len_max = max(sides)
     ratio = len_min/len_max
     return ratio
-
-def dist(point1, point2):
-    """Calculates the horizontal, vertical and euclidian distance between 2 points."""
-    x_dist = point1[0] - point2[0]
-    y_dist = point1[1] - point2[1]
-    euclidean_dist = np.sqrt((x_dist)**2 + (y_dist)**2)
-    return x_dist, y_dist, euclidean_dist
