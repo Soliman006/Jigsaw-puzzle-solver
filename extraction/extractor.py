@@ -70,8 +70,8 @@ class ExtractedData:
         # corner finder
         if self.settings.show_extraction_headings:
             print("finding corners")
-        best_rectangles_sorted, best_rectangles_index, av_length, img_corners = cornerFinder(hull_points, piece_contours,
-                                                                                             img_mask_bgr, self.settings)
+        best_rectangles_sorted, best_rectangles_index, av_length, img_corners = cornerFinder(hull, hull_points, piece_contours,
+                                                                                             img_mask_bgr, defects_f, self.settings)
         if self.settings.show_full_extraction_graphics:
             imshow(imageResize(img_corners, height=self.settings.disp_height), self.settings.env)
 
