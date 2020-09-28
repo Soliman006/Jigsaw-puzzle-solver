@@ -395,6 +395,14 @@ class SolverData:
         for i in best_edge:
             print(i.options[i.choice].piece)'''
         return best_column, best_score
+    
+    def solveinterior_column1(self):
+        self.hardReset()
+        self.placecurrentsolution()
+        self.flags.solvingborder = False
+        best_column, best_column_score = self.solvebestcolumn(1)
+        for i in best_column:
+            self.solution.append(i)
 
     def solveSpace(self, space, pieces):
         """When provided with a location in the puzzle and list of pieces, it will find the best piece to put in the space."""
