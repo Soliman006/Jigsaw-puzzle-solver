@@ -294,6 +294,57 @@ class SolverData:
             best_edge = self.possible_edges[best_score_index]
         return best_edge, best_score
     
+    def solvebestpartialedge(self,row):
+        sum_score = 0
+        potential_edge = []
+        while self.flags.solvable != 0:
+            while len(self.memory) < self.x_limit-2:
+                space = [len(self.memory)+1,row]
+                x = space[0]
+                y = space[1]
+                if self.settings.show_current_space_text:
+                    print(" ")
+                    print("Now solving for space", space)
+                if self.loc_type[y][x] == 1:  # edge
+                    step = self.solveSpace(space, self.processed_edges)
+                if self.flags.backtrack:
+                    self.flags.backtrack = 0    
+                    final_step, final_option = self.backtrace(self.memory)
+                    if self.flags.solvable == 0:
+                        break 
+                    else:
+                        self.backtracker(final_step, final_option)
+                        continue
+                # Place in puzzle and update
+                self.place(step)
+                if self.settings.show_solver_progress_text:
+                    print("Progress:", self.placement_num, "/", self.num_pieces)
+                if self.settings.show_incremental_solution:
+                    displaySolution(createSolution(self.data, self), self.data.av_length, self.x_limit, self.y_limit, self.settings)
+            
+            if self.flags.solvable == 0:
+                break
+            else:
+                potential_edge = list(self.memory)
+                self.possible_edges.append(potential_edge)
+                for i in range(len(self.memory)):
+                    sum_score = sum_score + self.memory[i].options[self.memory[i].choice].score
+                self.edge_scores.append(sum_score)
+                sum_score = 0
+                final_step, final_option = self.backtrace(self.memory)
+                if self.flags.solvable == 0:
+                    break
+                self.backtracker(final_step, final_option)
+                self.flags.cornerfound = False
+        
+        best_score = min(self.edge_scores)
+        best_score_index = np.argmin(self.edge_scores)
+        best_edge = self.possible_edges[best_score_index]
+        '''print('best border is number',best_score_index+1,'and the pieces are:')
+        for i in best_edge:
+            print(i.options[i.choice].piece)'''
+        return best_edge, best_score
+    
     def solvebestcolumn(self,column):
         sum_score = 0
         potential_column = []
