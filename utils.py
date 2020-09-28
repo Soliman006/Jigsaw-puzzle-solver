@@ -60,6 +60,7 @@ def retrieveExample(i):
         settings.e_contour_smoothing = 0.5
         settings.score_thresh = 1.72  # if no options are under this then it trigger the backtracker
         settings.max_options = 3
+        settings.inc = 5
     elif i == 2:
         settings.e_contour_smoothing = 0.5
         settings.max_options = 2
@@ -77,7 +78,9 @@ def retrieveExample(i):
         settings.interpolate_cand = False
     elif i == 5:
         settings.e_contour_smoothing = 0.5
-        settings.max_options = 3
+        settings.max_options = 1
+        settings.interpolate_ref = False
+        settings.interpolate_cand = False
     elif i == 7:
         settings.bg_thresh_low = hsv_to_cvhsv(23, 3, 60)
         settings.bg_thresh_high = hsv_to_cvhsv(60, 15, 95)
@@ -86,6 +89,22 @@ def retrieveExample(i):
         settings.bg_thresh_high = hsv_to_cvhsv(60, 15, 95)
     elif i == 10:
         settings.convexity_epsilon = 1000
+    elif i == 11:
+        settings.e_contour_smoothing = 0
+        settings.score_thresh = 2  # if no options are under this then it trigger the backtracker
+        settings.helper_threshold = 1.5  # all options within this multiplier are considered
+        settings.max_options = 2
+        settings.interpolate_ref = False
+        settings.interpolate_cand = False
+        settings.convexity_epsilon = 1500
+        settings.inc = 3
+    elif i == 12:
+        settings.e_contour_smoothing = 0
+        settings.max_options = 3
+        settings.interpolate_ref = False
+        settings.interpolate_cand = False
+        settings.convexity_epsilon = 1700
+        settings.inc = 4
     return img, settings
 
 
