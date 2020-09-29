@@ -489,7 +489,7 @@ class SolverData:
                             contour2 = self.data.processed_pieces[piece][(side + rotation) % 4]
                             contour1, contour2, peak_point1, peak_point2 = normaliseContours(contour1, contour2, self.data.av_length)
                             peak_dist = edist(peak_point1, peak_point2)
-                            if peak_dist > 12:
+                            if peak_dist > 13:
                                 rotation_score_total = 10000000
                                 break
                             
