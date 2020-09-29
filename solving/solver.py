@@ -636,15 +636,8 @@ class SolverData:
         print('number of points in contour1 = ',len(contour1),' and contour2 = ',len(contour2))
         print('number of points in reference = ',len(reference),' and candidate = ',len(candidate))
 
-        '''print(len(changed_contour))
-        for i in changed_contour:
-            print(i)'''
-        #closest_dist = findeuclid_dist(reference,candidate)
-        '''for i in closest_dist:
-            print(i)'''
-        
-        '''for i in reversed(contour2):
-            print(i)'''
+        for i in contour1:
+            print(i)
         
         '''score_shape, score_colour, score_total = compareContours(
             contour1, contour2, colour_curve1, colour_curve2, colour_contour_xy1, colour_contour_xy2, self.data.av_length, self.settings)'''
