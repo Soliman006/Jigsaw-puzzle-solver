@@ -98,19 +98,38 @@ def normaliseContour(contour, dir, av_length):
     norm_curve = move_contour(norm_curve, origin, trim_point_start)
     norm_curve = move_contour(norm_curve, trim_point_start, [trim_point_start[0], origin[1]])
 
-    peak_point = [0, 0]
+    '''peak_point = [0, 0]
     for i in range(len(max_index_list)):
         peak_point = peak_point + norm_curve[max_index_list[i]]
     peak_point = peak_point/len(max_index_list)
     peak_point_int = [0, 0]
     peak_point_int[0] = int(peak_point[0])
     peak_point_int[1] = int(peak_point[1])
-    peak_point_int = np.asarray(peak_point_int)
+    peak_point_int = np.asarray(peak_point_int)'''
 
     norm_curve = norm_curve.astype(np.int32)
+    
+    peak_point = findlockedge(norm_curve)
 
-    return norm_curve, peak_point_int
+    return norm_curve, peak_point
 
+def findlockedge(contour):
+    currentfar = contour[0]
+    otherfar = [0,0]
+    fardist = 0
+    for i in contour:
+        yd = ydist(contour[0],i)
+        if yd > fardist:
+            fardist = yd
+            currentfar = i
+            otherfar = [0,0]
+        elif yd == fardist:
+            otherfar = i
+    if otherfar[0] != 0:
+        far = [(currentfar[0]+otherfar[0])/2,currentfar[1]]
+    else:
+        far = [currentfar[0],currentfar[1]]
+    return far
 
 def compareContours(colour_curve1, colour_curve2, colour_contour_xy1, colour_contour_xy2, av_length, settings):
     """Takes 2 contours and compares them on shape and colour. A lower score indicates a better match."""
