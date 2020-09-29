@@ -110,9 +110,12 @@ def normaliseContour(contour, dir, av_length):
     norm_curve = norm_curve.astype(np.int32)
     
     peak_point = findlockedge(norm_curve)
-    peak_point = np.asarray(peak_point)
+    peak_point_int = [0, 0]
+    peak_point_int[0] = int(peak_point[0])
+    peak_point_int[1] = int(peak_point[1])
+    peak_point_int = np.asarray(peak_point_int)
 
-    return norm_curve, peak_point
+    return norm_curve, peak_point_int
 
 def findlockedge(contour):
     currentfar = contour[0]
