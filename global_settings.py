@@ -73,6 +73,7 @@ class globalSettings:
         self.score_colour_thresh = 0.8
         self.shape_score_frac = 0.8
         self.corner_thresh = 2
+        self.peak_dist_thresh = 15
 
         # helper
         self.helper = False
