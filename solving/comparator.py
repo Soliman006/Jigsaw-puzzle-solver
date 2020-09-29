@@ -97,8 +97,8 @@ def normaliseContour(contour, dir, av_length):
 
     norm_curve = move_contour(norm_curve, origin, trim_point_start)
     norm_curve = move_contour(norm_curve, trim_point_start, [trim_point_start[0], origin[1]])
-'''
-    peak_point = [0, 0]
+
+    '''peak_point = [0, 0]
     for i in range(len(max_index_list)):
         peak_point = peak_point + norm_curve[max_index_list[i]]
     peak_point = peak_point/len(max_index_list)
