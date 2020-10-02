@@ -3,7 +3,7 @@ import numpy as np
 import copy
 
 from graphics import createSolution, displaySolution, imshow, createBGRSolution, displayBGRSolution
-from solving.comparator import normaliseContour, normaliseContour, compareColourContours, colourClosestDist, findeuclid_dist, process_contour, remove_duplicates, edist
+from solving.comparator import normaliseContour, normaliseContours, compareColourContours, colourClosestDist, findeuclid_dist, process_contour, remove_duplicates, edist
 from solving.utils import loc_type_detail_to_rotation, setProcessedLists
 from solving.updator import incrementPriorities, updateCurves
 from utils import imageResize, zoom, takeFourth
