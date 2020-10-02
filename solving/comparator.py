@@ -139,7 +139,10 @@ def remove_duplicates(contour):
     return contourlist
             
 def process_contour(contour):
-    contourlist = contour.tolist()
+    if type(contour) is not list:
+        contourlist = contour.tolist()
+    else:
+        contourlist = contour
     num_del = 0
     num_add = 0
     test = False
