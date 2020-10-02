@@ -570,17 +570,21 @@ class SolverData:
                 rotation_score_shape = 0
                 rotation_score_colour = 0
                 invalid_rotation = False
+                candidates = []
                 if self.validPieceComparison(space, piece, rotation) == 1:
                     n_sides_compared = 0
                     for side in range(0, 4):
                         if ref_sides[side] != -1:  # make sure there is a contour to compare to
                             candidate = self.data.processed_pieces[piece][(side + rotation) % 4]
                             candidate, candidate_peak = normaliseContour(candidate, 1, self.data.av_length)
+                            candidates.append(candidate)
                             peak_dist = edist(ref_sides[side].peak, candidate_peak)
                             if peak_dist > self.settings.peak_dist_thresh:
                                 rotation_score_total = 10000000
                                 invalid_rotation = True
                                 break
+                        else:
+                            candidates.append(-1)
                     if invalid_rotation is True:
                         continue
                     
@@ -607,7 +611,7 @@ class SolverData:
                     
                     for side in range(0, 4):
                         if ref_sides[side] != -1:
-                            candidate = process_contour(candidate)    
+                            candidate = process_contour(candidates[side])    
                             side_score_shape = findeuclid_dist(ref_sides[side].interpolation,candidate)
                             rotation_score_shape = rotation_score_shape + side_score_shape
                             
