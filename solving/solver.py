@@ -606,9 +606,9 @@ class SolverData:
                         continue
                     
                     for side in range(0, 4):
-                        if ref_side[side] != -1:
+                        if ref_sides[side] != -1:
                             candidate = process_contour(candidate)    
-                            side_score_shape = findeuclid_dist(ref_side[side].reference_inter,candidate)
+                            side_score_shape = findeuclid_dist(ref_sides[side].reference_inter,candidate)
                             rotation_score_shape = rotation_score_shape + side_score_shape
                             
                     rotation_score_total = self.settings.shape_score_frac*rotation_score_shape + (1-self.settings.shape_score_frac)*rotation_score_colour
