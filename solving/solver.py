@@ -534,8 +534,8 @@ class SolverData:
                     optimal_rotation = best_rotation
                     optimal_index = i
                     optimal_piece = piece
-        return optimal_index, optimal_piece, optimal_rotation, optimal_piece_score, n_sides, matches
-    '''
+        return optimal_index, optimal_piece, optimal_rotation, optimal_piece_score, n_sides, matches'''
+    
     def generate_options(self, space, pieces):
         space_x = space[0]
         space_y = space[1]
