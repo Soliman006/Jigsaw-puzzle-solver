@@ -459,7 +459,7 @@ class SolverData:
                 return step
         else:
             return step
-'''
+    '''
     def generate_options(self, space, pieces):
         space_x = space[0]
         space_y = space[1]
