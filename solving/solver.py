@@ -3,7 +3,7 @@ import numpy as np
 import copy
 
 from graphics import createSolution, displaySolution, imshow, createBGRSolution, displayBGRSolution
-from solving.comparator import normaliseContours, compareColourContours, colourClosestDist, findeuclid_dist, process_contour, remove_duplicates, edist
+from solving.comparator import normaliseContour, normaliseContour, compareColourContours, colourClosestDist, findeuclid_dist, process_contour, remove_duplicates, edist
 from solving.utils import loc_type_detail_to_rotation, setProcessedLists
 from solving.updator import incrementPriorities, updateCurves
 from utils import imageResize, zoom, takeFourth
@@ -460,7 +460,7 @@ class SolverData:
         else:
             return step
 
-    def generate_options(self, space, pieces):
+    '''def generate_options(self, space, pieces):
         space_x = space[0]
         space_y = space[1]
         max_score = 100000000
@@ -534,8 +534,104 @@ class SolverData:
                     optimal_rotation = best_rotation
                     optimal_index = i
                     optimal_piece = piece
-        return optimal_index, optimal_piece, optimal_rotation, optimal_piece_score, n_sides, matches
+        return optimal_index, optimal_piece, optimal_rotation, optimal_piece_score, n_sides, matches'''
+    
+    def generate_options(self, space, pieces):
+        space_x = space[0]
+        space_y = space[1]
+        max_score = 100000000
+        optimal_piece_score = max_score
+        optimal_rotation = -1
+        optimal_index = -1
+        optimal_piece = -1
+        n_sides = 0
+        matches = []
+        ref_sides = []
+        
+        for side in range(0,4):
+            space_piece_ref = self.space[space_y][space_x][side][0]
+            space_side_ref = self.space[space_y][space_x][side][1]
+            if space_piece_ref != -1:
+                reference = self.data.processed_pieces[space_piece_ref][space_side_ref]
+                reference, peak_point = normaliseContour(reference,0,self.data.av_length)
+                reference_inter = process_contour(reference)
+                ref_side = Ref_side(reference, peak_point, reference_inter)
+                ref_sides.append(ref_side)
+                n_sides = n_sides + 1
+            else:
+                ref_sides.append(space_piece_ref)
 
+        for i in range(len(pieces)):
+            piece = pieces[i]
+            piece_score = max_score
+            best_rotation = -1
+            for rotation in range(0, 4):
+                rotation_score_total = 0
+                rotation_score_shape = 0
+                rotation_score_colour = 0
+                invalid_rotation = False
+                if self.validPieceComparison(space, piece, rotation) == 1:
+                    n_sides_compared = 0
+                    for side in range(0, 4):
+                        if ref_sides[side] != -1:  # make sure there is a contour to compare to
+                            candidate = self.data.processed_pieces[piece][(side + rotation) % 4]
+                            candidate, candidate_peak = normaliseContour(candidate, 1, self.data.av_length)
+                            peak_dist = edist(ref_sides[side].peak, candidate_peak)
+                            if peak_dist > self.settings.peak_dist_thresh:
+                                rotation_score_total = 10000000
+                                invalid_rotation = True
+                                break
+                    if invalid_rotation is True:
+                        continue
+                    
+                    for side in range(0, 4):
+                        if ref_sides[side] != -1:
+                            space_piece_ref = self.space[space_y][space_x][side][0]
+                            space_side_ref = self.space[space_y][space_x][side][1]
+                            colour_curve1 = self.data.colour_contours[space_piece_ref][space_side_ref]
+                            colour_curve2 = self.data.colour_contours[piece][(side + rotation) % 4]
+                            colour_contour_xy1 = self.data.colour_contours_xy[space_piece_ref][space_side_ref]
+                            colour_contour_xy2 = self.data.colour_contours_xy[piece][(side + rotation) % 4]
+                            colour_contour_xy1, colour_contour_xy2, colour_peak_point1, colour_peak_point2 = normaliseContours(
+                                colour_contour_xy1, colour_contour_xy2, self.data.av_length)
+                            
+                            side_score_colour = compareColourContours(colour_contour_xy1, colour_contour_xy2, colour_curve1, colour_curve2, self.settings)
+                            if side_score_colour > self.settings.score_colour_thresh:
+                                rotation_score_total = 10000000
+                                invalid_rotation = True
+                                break
+                            rotation_score_colour = rotation_score_colour + side_score_colour
+                    
+                    if invalid_rotation is True:
+                        continue
+                    
+                    for side in range(0, 4):
+                        if ref_side[side] != -1:
+                            candidate = process_contour(candidate)    
+                            side_score_shape = findeuclid_dist(ref_side[side].reference_inter,candidate)
+                            rotation_score_shape = rotation_score_shape + side_score_shape
+                            
+                    rotation_score_total = self.settings.shape_score_frac*rotation_score_shape + (1-self.settings.shape_score_frac)*rotation_score_colour
+                    if self.settings.show_comparison_text:
+                        print("Comparing piece", piece, "with rotation", rotation, "to space", space,
+                              f'scores: shape {rotation_score_shape:.4f} colour {rotation_score_colour:.4f}'
+                              f' total {rotation_score_total:.4f}')
+                else:
+                    rotation_score_total = 10000000
+
+                if rotation_score_total < piece_score:
+                    piece_score = rotation_score_total
+                    best_rotation = rotation
+            if piece_score < 10000000:
+                score_log = [i, piece, best_rotation, piece_score]
+                matches.append(score_log)
+                if piece_score < optimal_piece_score:
+                    optimal_piece_score = piece_score
+                    optimal_rotation = best_rotation
+                    optimal_index = i
+                    optimal_piece = piece
+        return optimal_index, optimal_piece, optimal_rotation, optimal_piece_score, n_sides, matches
+    
     def place(self, step):  # space, piece, correct_rotation):
         """Command allowing the user to manually force a certain piece into a certain place in the puzzle."""
         if self.flags.putinmemory:
@@ -905,6 +1001,14 @@ class Option:
         self.rotation = rotation
         self.score = score
 
+class Ref_side:
+    "Stores the original contour, lock_peak and processed contour for a space side"
+    
+    def __init__(self, contour, peak, interpolation):
+        """Initialisation"""
+        self.contour = contour
+        self.peak = peak
+        self.interpolation = interpolation
 
 class Flags:
     """Stores flags."""
