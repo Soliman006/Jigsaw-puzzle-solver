@@ -262,7 +262,7 @@ class SolverData:
                         step = Step(space, options, choice)
                     else:
                         step = self.solveSpace(space, self.processed_corners)
-                        print('Corner is found')
+                        #print('Corner is found')
                 if self.loc_type[y][x] == 1:  # edge
                     step = self.solveSpace(space, self.processed_edges)
                 if self.flags.backtrack:
