@@ -116,6 +116,7 @@ class SolverData:
             best_row, best_row_score = self.solvebestcolumn(i)
             for j in best_row:
                 self.solution.append(j)
+                print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
     
     def solveborder2(self):
         best_scores = []
@@ -137,16 +138,17 @@ class SolverData:
             best_scores.append(best_score)
             best_edges.append(best_edge)
             self.hardReset()
-        for i in best_scores:
+        '''for i in best_scores:
             print(i)
         for i in range(len(best_edges)):
             for j in best_edges[i]:
                 print(j.options[j.choice].piece, j.options[j.choice].score)
-                print()
+                print()'''
         best_score_index = np.argmin(best_scores)
         best_overall_edge = best_edges[best_score_index]
         for i in best_overall_edge:
             self.solution.append(i)
+            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
         
         best_scores = []
         best_edges = []
@@ -178,6 +180,7 @@ class SolverData:
         best_overall_edge = best_edges[best_score_index]
         for i in best_overall_edge:
             self.solution.append(i)
+            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
         
         self.setloctype(self.data.puzzle_columns,self.data.puzzle_rows)
         
@@ -213,6 +216,7 @@ class SolverData:
         best_overall_edge = best_edges[best_score_index]
         for i in best_overall_edge:
             self.solution.append(i)
+            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
             
         self.hardReset()
         self.placecurrentsolution()
@@ -223,6 +227,7 @@ class SolverData:
             best_edge, best_score = self.solvebestpartialedge(0)
         for i in best_edge:
             self.solution.append(i)
+            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
         
         self.hardReset()
         self.placecurrentsolution()
@@ -408,7 +413,7 @@ class SolverData:
         """When provided with a location in the puzzle and list of pieces, it will find the best piece to put in the space."""
         optimal_index, optimal_piece, optimal_rotation, optimal_piece_score,\
             n_sides_compared, matches = self.generate_options(space, pieces)
-        print(optimal_piece_score,n_sides_compared)
+        #print(optimal_piece_score,n_sides_compared)
         if (optimal_piece_score > 99999):
             if self.settings.show_error_text:
                 print("No legal matches!")
