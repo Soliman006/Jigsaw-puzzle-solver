@@ -170,12 +170,12 @@ class SolverData:
             best_edges.append(best_edge)
             self.hardReset()
             self.removepieces()
-        for i in best_scores:
+        '''for i in best_scores:
             print(i)
         for i in range(len(best_edges)):
             for j in best_edges[i]:
                 print(j.options[j.choice].piece, j.options[j.choice].score)
-                print()
+                print()'''
         best_score_index = np.argmin(best_scores)
         best_overall_edge = best_edges[best_score_index]
         for i in best_overall_edge:
