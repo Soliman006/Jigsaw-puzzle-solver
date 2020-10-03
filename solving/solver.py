@@ -116,7 +116,8 @@ class SolverData:
             best_row, best_row_score = self.solvebestcolumn(i)
             for j in best_row:
                 self.solution.append(j)
-                print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
+            prog = len(self.solution)/len(self.data.piece_contours)*100
+            print(f'Progress: {prog:.0f}%')
     
     def solveborder2(self):
         best_scores = []
@@ -148,7 +149,8 @@ class SolverData:
         best_overall_edge = best_edges[best_score_index]
         for i in best_overall_edge:
             self.solution.append(i)
-            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
+        prog = len(self.solution)/len(self.data.piece_contours)*100
+        print(f'Progress: {prog:.0f}%')
         
         best_scores = []
         best_edges = []
@@ -180,7 +182,8 @@ class SolverData:
         best_overall_edge = best_edges[best_score_index]
         for i in best_overall_edge:
             self.solution.append(i)
-            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
+        prog = len(self.solution)/len(self.data.piece_contours)*100
+        print(f'Progress: {prog:.0f}%')
         
         self.setloctype(self.data.puzzle_columns,self.data.puzzle_rows)
         
@@ -216,7 +219,8 @@ class SolverData:
         best_overall_edge = best_edges[best_score_index]
         for i in best_overall_edge:
             self.solution.append(i)
-            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
+        prog = len(self.solution)/len(self.data.piece_contours)*100
+        print(f'Progress: {prog:.0f}%')
             
         self.hardReset()
         self.placecurrentsolution()
@@ -227,7 +231,8 @@ class SolverData:
             best_edge, best_score = self.solvebestpartialedge(0)
         for i in best_edge:
             self.solution.append(i)
-            print('Progress: ',len(self.solution)/len(self.data.piece_contours)*100,'%')
+        prog = len(self.solution)/len(self.data.piece_contours)*100
+        print(f'Progress: {prog:.0f}%')
         
         self.hardReset()
         self.placecurrentsolution()
