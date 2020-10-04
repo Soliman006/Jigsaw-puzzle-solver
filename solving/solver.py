@@ -109,6 +109,7 @@ class SolverData:
         
     def fullsolver_columns(self):
         self.solveborder2()
+        self.settings.max_options = 1
         for i in range(1,self.data.puzzle_columns-1):
             self.hardReset()
             self.placecurrentsolution()
