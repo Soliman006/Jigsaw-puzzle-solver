@@ -21,6 +21,7 @@ class SolverData:
         #self.data.puzzle_columns = 6
         self.x_limit = self.data.puzzle_columns
         self.y_limit = self.data.puzzle_rows
+        self.num_pieces = len(self.data.piece_contours)
         self.n_pieces = len(self.data.piece_contours)
         self.n_exterior_pieces = len(self.data.corners) + len(self.data.edges)
         # Location type
