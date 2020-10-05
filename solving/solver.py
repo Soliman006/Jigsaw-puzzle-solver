@@ -451,7 +451,7 @@ class SolverData:
             piece = good_matches[index][1]
             rotation = good_matches[index][2]
             score = good_matches[index][3]
-            print(piece,score)
+            print(space,piece,score)
             option = Option(piece, rotation, score)
             options.append(option)
         # save all the good options for this step
