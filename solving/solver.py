@@ -442,14 +442,16 @@ class SolverData:
                 return step
         # filter to keep only the matches with somewhat decent scores:
         good_matches = self.matchFilter(matches)
-
+        
         good_matches = self.truncate(good_matches, self.settings.max_options)
+        
         # restructure the data into a list of objects
         options = []
         for index in range(len(good_matches)):
             piece = good_matches[index][1]
             rotation = good_matches[index][2]
             score = good_matches[index][3]
+            print(piece,score)
             option = Option(piece, rotation, score)
             options.append(option)
         # save all the good options for this step
