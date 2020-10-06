@@ -43,7 +43,7 @@ def move_bgr(contour_old, image_old, center_old, image_new, center_new, img_blan
     """Moves a BGR image based on the relative distance between 2 points."""
     h_old, w_old, ch_old = image_old.shape
     h_new, w_new, ch_new = image_new.shape
-    image_blank_old = img_blank
+    img_blank_old = img_blank
     #img_blank_old = np.zeros([h_old, w_old, ch_old], dtype=np.uint8)
     img_blank_new = img_blank
     #img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
@@ -82,7 +82,7 @@ def rotate_bgr(contour_old, image_old, center_old, image_new, angle, img_blank):
     """Rotates a BGR image by a certain angle about a certain point."""
     h_old, w_old, ch_old = image_old.shape
     h_new, w_new, ch_new = image_new.shape
-    image_blank_old = img_blank
+    img_blank_old = img_blank
     #img_blank_old = np.zeros([h_old, w_old, ch_old], dtype=np.uint8)
     img_blank_new = img_blank
     #img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
