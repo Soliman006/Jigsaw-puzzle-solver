@@ -53,6 +53,7 @@ def move_bgr(contour_old, image_old, center_old, image_new, center_new, img_blan
     upper = np.array([255, 255, 255])
     img_piece_mask = cv2.inRange(img_piece_mask_bgr, lower, upper)
     img_piece_masked = cv2.bitwise_and(image_old, image_old, mask=img_piece_mask)
+    imshow(img_piece_masked)
 
     # create a mask of just that piece, in it's final orientation.
     moved_contour = move_contour(contour_old, center_old, center_new)
