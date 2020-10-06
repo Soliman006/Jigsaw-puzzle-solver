@@ -17,8 +17,8 @@ class PuzzleMaker:
         self.img_input_h, self.img_input_w, self.img_input_ch = self.img_input.shape
         print(self.img_input_h, self.img_input_w, self.img_input_ch)
         self.background_colour = np.array([0, 255, 0])
-        #self.img_input_blank = np.full((self.img_input_h, self.img_input_w), self.background_colour, dtype=np.uint8)
-        self.img_input_blank = np.zeros([self.img_input_h, self.img_input_w, self.img_input_ch], dtype=np.uint8)
+        self.img_input_blank = np.full([self.img_input_h, self.img_input_w,1], self.background_colour, dtype=np.uint8)
+        #self.img_input_blank = np.zeros([self.img_input_h, self.img_input_w, self.img_input_ch], dtype=np.uint8)
         print(self.img_input_blank)
         self.n_rows = n_rows
         self.settings = settings
