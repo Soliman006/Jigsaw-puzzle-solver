@@ -15,7 +15,7 @@ class PuzzleMaker:
         """Initialisation."""
         self.img_input = img
         self.img_input_h, self.img_input_w, self.img_input_ch = self.img_input.shape
-        self.background_colour = np.array([0, 255, 0])
+        self.background_colour = np.array([0,255,0])
         self.img_input_blank = np.full([self.img_input_h, self.img_input_w,3], self.background_colour, dtype=np.uint8)
         self.n_rows = n_rows
         self.settings = settings
