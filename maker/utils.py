@@ -44,7 +44,7 @@ def move_bgr(contour_old, image_old, center_old, image_new, center_new, img_blan
     h_old, w_old, ch_old = image_old.shape
     h_new, w_new, ch_new = image_new.shape
     img_blank_old = np.zeros([h_old, w_old, ch_old], dtype=np.uint8)
-    img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
+    #img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
 
     # create an image of just the piece at it's current location.
     img_piece_mask_bgr = copy.deepcopy(img_blank_old)
