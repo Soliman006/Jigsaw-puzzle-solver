@@ -16,7 +16,6 @@ class PuzzleMaker:
         self.img_input = img
         self.img_input_h, self.img_input_w, self.img_input_ch = self.img_input.shape
         self.background_colour = np.array([0,0,0])
-        self.img_input_blank = np.full([self.img_input_h, self.img_input_w,3], self.background_colour, dtype=np.uint8)
         self.n_rows = n_rows
         self.settings = settings
         self.contours = []
@@ -53,7 +52,7 @@ class PuzzleMaker:
                     px_y = int(2 * self.side_len + 2 * y * self.side_len)
                     point = [px_x, px_y]
                     self.result_grid.append(point)
-        self.img_result_blank = np.ones([self.img_result_h, self.img_result_w, self.ch], dtype=np.uint8)
+        self.img_result_blank = np.full([self.img_input_h, self.img_input_w,3], self.background_colour, dtype=np.uint8)
         self.puzzle = [[False for i in range(self.n_cols)] for j in range(self.n_rows)]
 
     def create_pieces(self):
