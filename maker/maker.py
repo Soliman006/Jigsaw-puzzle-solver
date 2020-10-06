@@ -2,7 +2,7 @@ import numpy as np
 import random
 import math
 from graphics import imshow
-from utils import imageResize, move_bgr, rotate_bgr
+from utils import imageResize
 from maker.utils import move_bgr, rotate_bgr
 import cv2
 import copy
