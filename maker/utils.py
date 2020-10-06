@@ -54,7 +54,6 @@ def move_bgr(contour_old, image_old, center_old, image_new, center_new, img_blan
     upper = np.array([255, 255, 255])
     img_piece_mask = cv2.inRange(img_piece_mask_bgr, lower, upper)
     img_piece_masked = cv2.bitwise_and(image_old, image_old, mask=img_piece_mask)
-    imshow(img_piece_masked,'JUPYTER')
 
     # create a mask of just that piece, in it's final orientation.
     moved_contour = move_contour(contour_old, center_old, center_new)
@@ -64,6 +63,7 @@ def move_bgr(contour_old, image_old, center_old, image_new, center_new, img_blan
     lower = np.array([127, 127, 127])
     upper = np.array([255, 255, 255])
     img_piece_mask_moved = cv2.inRange(img_piece_mask_moved_bgr, lower, upper)
+    
 
     # move the image in img_piece_masked to its final orientation. Use a bounding rectange and some sort of copy function
     movement = copy.deepcopy(center_old)
