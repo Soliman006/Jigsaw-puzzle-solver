@@ -16,7 +16,7 @@ class PuzzleMaker:
         self.img_input = img
         self.img_input_h, self.img_input_w, self.img_input_ch = self.img_input.shape
         self.img_input_blank = np.zeros([self.img_input_h, self.img_input_w, self.img_input_ch], dtype=np.uint8)
-        imshow(img_input_blank, self.settings.env)
+        imshow(self.img_input_blank, self.settings.env)
         self.n_rows = n_rows
         self.settings = settings
         self.contours = []
