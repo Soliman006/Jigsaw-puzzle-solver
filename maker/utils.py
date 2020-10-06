@@ -43,10 +43,8 @@ def move_bgr(contour_old, image_old, center_old, image_new, center_new, img_blan
     """Moves a BGR image based on the relative distance between 2 points."""
     h_old, w_old, ch_old = image_old.shape
     h_new, w_new, ch_new = image_new.shape
-    img_blank_old = img_blank
-    #img_blank_old = np.zeros([h_old, w_old, ch_old], dtype=np.uint8)
-    img_blank_new = img_blank
-    #img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
+    img_blank_old = np.zeros([h_old, w_old, ch_old], dtype=np.uint8)
+    img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
 
     # create an image of just the piece at it's current location.
     img_piece_mask_bgr = copy.deepcopy(img_blank_old)
@@ -82,10 +80,8 @@ def rotate_bgr(contour_old, image_old, center_old, image_new, angle, img_blank):
     """Rotates a BGR image by a certain angle about a certain point."""
     h_old, w_old, ch_old = image_old.shape
     h_new, w_new, ch_new = image_new.shape
-    img_blank_old = img_blank
-    #img_blank_old = np.zeros([h_old, w_old, ch_old], dtype=np.uint8)
-    img_blank_new = img_blank
-    #img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
+    img_blank_old = np.zeros([h_old, w_old, ch_old], dtype=np.uint8)
+    img_blank_new = np.zeros([h_new, w_new, ch_new], dtype=np.uint8)
 
     img_piece_mask_bgr = copy.deepcopy(img_blank_old)
     cv2.drawContours(img_piece_mask_bgr, [contour_old], -1, (255, 255, 255), thickness=cv2.FILLED)
