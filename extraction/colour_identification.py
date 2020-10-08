@@ -25,7 +25,7 @@ def colourIdentification(processed_pieces, img_processed_bgr, settings):
                 for y_shift in range(colour_offset_min, colour_offset_max):
                     for x_shift in range(colour_offset_min, colour_offset_max):
                         if ((img_processed_bgr[y + y_shift][x + x_shift][0] != 0) or
-                                (img_processed_bgr[y + y_shift][x + x_shift][1] != 255) or
+                                (img_processed_bgr[y + y_shift][x + x_shift][1] != 0) or
                                 (img_processed_bgr[y + y_shift][x + x_shift][2] != 0)):
                             count = count + 1
                             bgr_sum = bgr_sum + img_processed_bgr[y + y_shift][x + x_shift]
@@ -44,7 +44,7 @@ def colourIdentification(processed_pieces, img_processed_bgr, settings):
             for y_shift in range(colour_offset_min, colour_offset_max):
                 for x_shift in range(colour_offset_min, colour_offset_max):
                     if ((img_processed_bgr[y + y_shift][x + x_shift][0] != 0) or
-                        (img_processed_bgr[y + y_shift][x + x_shift][1] != 255)
+                        (img_processed_bgr[y + y_shift][x + x_shift][1] != 0)
                             or (img_processed_bgr[y + y_shift][x + x_shift][2] != 0)):
                         count = count + 1
                         bgr_sum = bgr_sum + img_processed_bgr[y + y_shift][x + x_shift]
