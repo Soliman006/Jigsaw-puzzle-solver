@@ -350,12 +350,13 @@ class SolverData:
                 self.backtracker(final_step, final_option)
                 self.flags.cornerfound = False
         
-        best_score = min(self.edge_scores)
-        best_score_index = np.argmin(self.edge_scores)
-        best_edge = self.possible_edges[best_score_index]
-        '''print('best border is number',best_score_index+1,'and the pieces are:')
-        for i in best_edge:
-            print(i.options[i.choice].piece)'''
+        if len(self.edge_scores) == 0:
+            best_edge = []
+            best_score = 10
+        else:
+            best_score = min(self.edge_scores)
+            best_score_index = np.argmin(self.edge_scores)
+            best_edge = self.possible_edges[best_score_index]
         return best_edge, best_score
     
     def solvebestcolumn(self,column):
@@ -401,9 +402,14 @@ class SolverData:
                 self.backtracker(final_step, final_option)
                 self.flags.cornerfound = False
         
-        best_score = min(self.column_scores)
-        best_score_index = np.argmin(self.column_scores)
-        best_column = self.possible_columns[best_score_index]
+        if len(self.edge_scores) == 0:
+            best_column = []
+            best_score = 10
+            print('Puzzle cannot be solved with current parameters')
+        else:
+            best_score = min(self.column_scores)
+            best_score_index = np.argmin(self.column_scores)
+            best_column = self.possible_columns[best_score_index]      
         '''print('best border is number',best_score_index+1,'and the pieces are:')
         for i in best_edge:
             print(i.options[i.choice].piece)'''
