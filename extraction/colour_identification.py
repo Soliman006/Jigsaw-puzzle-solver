@@ -9,7 +9,7 @@ def colourIdentification(processed_pieces, img_processed_bgr, settings):
     colour_offset_max = settings.inc
     colour_contours = []
     colour_contours_xy = []
-    background_colour = np.array([0,0,0])
+    #background_colour = np.array([0,0,0])
     for piece in range(len(processed_pieces)):
         colour_piece = []
         colour_piece_xy = []
@@ -25,9 +25,9 @@ def colourIdentification(processed_pieces, img_processed_bgr, settings):
                 y = processed_pieces[piece][side][point][1]
                 for y_shift in range(colour_offset_min, colour_offset_max):
                     for x_shift in range(colour_offset_min, colour_offset_max):
-                        if ((img_processed_bgr[y + y_shift][x + x_shift][0] != background_colour[0]) or
-                                (img_processed_bgr[y + y_shift][x + x_shift][1] != background_colour[1]) or
-                                (img_processed_bgr[y + y_shift][x + x_shift][2] != background_colour[2])):
+                        if ((img_processed_bgr[y + y_shift][x + x_shift][0] != 0) or
+                                (img_processed_bgr[y + y_shift][x + x_shift][1] != 0]) or
+                                (img_processed_bgr[y + y_shift][x + x_shift][2] != 0)):
                             count = count + 1
                             bgr_sum = bgr_sum + img_processed_bgr[y + y_shift][x + x_shift]
                 if count != 0:
@@ -44,9 +44,9 @@ def colourIdentification(processed_pieces, img_processed_bgr, settings):
             y = processed_pieces[piece][side][point][1]
             for y_shift in range(colour_offset_min, colour_offset_max):
                 for x_shift in range(colour_offset_min, colour_offset_max):
-                    if ((img_processed_bgr[y + y_shift][x + x_shift][0] != background_colour[0]) or
-                        (img_processed_bgr[y + y_shift][x + x_shift][1] != background_colour[1])
-                            or (img_processed_bgr[y + y_shift][x + x_shift][2] != background_colour[2])):
+                    if ((img_processed_bgr[y + y_shift][x + x_shift][0] != 0) or
+                        (img_processed_bgr[y + y_shift][x + x_shift][1] != 0)
+                            or (img_processed_bgr[y + y_shift][x + x_shift][2] != 0)):
                         count = count + 1
                         bgr_sum = bgr_sum + img_processed_bgr[y + y_shift][x + x_shift]
             if count != 0:
