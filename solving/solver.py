@@ -110,13 +110,15 @@ class SolverData:
         
     def fullsolver_columns(self):
         self.solveborder2()
-        '''if self.num_pieces > 400:
-            self.settings.helper_threshold = 1.03'''
+        if self.num_pieces > 400:
+            self.settings.helper_threshold = 1.03
         for i in range(1,self.data.puzzle_columns-1):
             self.hardReset()
             self.placecurrentsolution()
             self.flags.solvingborder = False
             best_row, best_row_score = self.solvebestcolumn(i)
+            if len(best_row) == 0:
+                return
             for j in best_row:
                 self.solution.append(j)
             prog = len(self.solution)/len(self.data.piece_contours)*100
