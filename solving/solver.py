@@ -402,7 +402,7 @@ class SolverData:
                 self.backtracker(final_step, final_option)
                 self.flags.cornerfound = False
         
-        if len(self.edge_scores) == 0:
+        if len(self.column_scores) == 0:
             best_column = []
             best_score = 10
             print('Puzzle cannot be solved with current parameters')
