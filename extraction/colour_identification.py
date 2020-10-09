@@ -9,7 +9,7 @@ def colourIdentification(processed_pieces, img_processed_bgr, settings):
     colour_offset_max = settings.inc
     colour_contours = []
     colour_contours_xy = []
-    background_colour = np.array([0,255,0])
+    background_colour = np.array([0,0,0])
     for piece in range(len(processed_pieces)):
         colour_piece = []
         colour_piece_xy = []
