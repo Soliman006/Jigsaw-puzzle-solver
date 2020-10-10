@@ -372,9 +372,9 @@ def colourDist(colour1, colour2):
     b_dist = abs(colour1[0] - colour2[0])
     g_dist = abs(colour1[1] - colour2[1])
     r_dist = abs(colour1[2] - colour2[2])
-    sum_dist = b_dist + g_dist + r_dist
-    #euclidean_dist = np.sqrt((b_dist)**2 + (g_dist)**2 + (r_dist)**2)
-    return b_dist, g_dist, r_dist, sum_dist#euclidean_dist
+    #sum_dist = b_dist + g_dist + r_dist
+    euclidean_dist = np.sqrt((b_dist)**2 + (g_dist)**2 + (r_dist)**2)
+    return b_dist, g_dist, r_dist,euclidean_dist #sum_dist
 
 
 def colourClosestDist(point1, curve1, colour1, curve2, colour_curve2):
