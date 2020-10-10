@@ -383,6 +383,8 @@ def colourDist(colour1, colour2):
     r_dist = abs(colour1[2] - colour2[2])
     sum_bgr = b_dist + g_dist + r_dist
     h_dist = abs(hsv1[0] - hsv2[0])
+    if h_dist > 180:
+        h_dist = 360 - h_dist
     s_dist = abs(hsv1[1] - hsv2[1])
     v_dist = abs(hsv1[2] - hsv2[2])
     print(h_dist,s_dist,v_dist)
