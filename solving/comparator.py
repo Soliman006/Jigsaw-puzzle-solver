@@ -431,7 +431,7 @@ def compareColourContours(contour1, contour2, colour_curve1, colour_curve2, sett
     score = score / 150#441.673  # max possible score is 441, thus convert to range of 0-1.
     #hsv_score = hsv_score / len(contour1)
     #hsv_score = hsv_score / 150
-    print('HSV score is ',hsv_score)
+    #print('HSV score is ',hsv_score)
     if settings.show_colour_comparison:
         imshow(imageResize(img_colour, height=height), settings.env)
         print(" ")
