@@ -370,8 +370,8 @@ def compareShapeContours(contour1, contour2):
 
 def colourDist(colour1, colour2):
     """Calculates the difference between 2 colours."""
-    hsv1 = cv2.cvtColor(np.uint8([[colour1]]), cv2.COLOR_BGR2HSV)
-    hsv2 = cv2.cvtColor(np.uint8([[colour2]]), cv2.COLOR_BGR2HSV)
+    hsv1 = cv2.cvtColor(np.array([[colour1]]), cv2.COLOR_BGR2HSV)
+    hsv2 = cv2.cvtColor(np.array([[colour2]]), cv2.COLOR_BGR2HSV)
     hsv1 = hsv1[0][0]
     hsv2 = hsv2[0][0]
     print('HSV1 values are:',hsv1[0],hsv1[1],hsv1[2])
@@ -385,6 +385,7 @@ def colourDist(colour1, colour2):
     v_dist = abs(hsv1[2] - hsv2[2])
     print(h_dist,s_dist,v_dist)
     sum_hsv = h_dist + s_dist + v_dist
+    print = 
     #euclidean_dist = np.sqrt((b_dist)**2 + (g_dist)**2 + (r_dist)**2)
     return b_dist, g_dist, r_dist, sum_bgr, sum_hsv#euclidean_dist 
 
