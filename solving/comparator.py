@@ -383,6 +383,7 @@ def colourDist(colour1, colour2):
     h_dist = abs(hsv1[0] - hsv2[0])
     s_dist = abs(hsv1[1] - hsv2[1])
     v_dist = abs(hsv1[2] - hsv2[2])
+    print(h_dist,s_dist,v_dist)
     sum_hsv = h_dist + s_dist + v_dist
     #euclidean_dist = np.sqrt((b_dist)**2 + (g_dist)**2 + (r_dist)**2)
     return b_dist, g_dist, r_dist, sum_bgr, sum_hsv#euclidean_dist 
