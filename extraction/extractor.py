@@ -176,4 +176,5 @@ class ExtractedData:
         """Displays zoomed in images of every piece extracted."""
         for piece in range(len(self.grid_centers)):
             cropped = zoom(self.img_processed_bgr, self.grid_centers[piece], self.radius_max)
+            print(piece)
             imshow(imageResize(cropped, height=self.settings.disp_height), self.settings.env)
