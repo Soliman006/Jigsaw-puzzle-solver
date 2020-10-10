@@ -374,6 +374,8 @@ def colourDist(colour1, colour2):
     hsv2 = cv2.cvtColor(np.uint8([[colour2]]), cv2.COLOR_BGR2HSV)
     hsv1 = hsv1[0][0]
     hsv2 = hsv2[0][0]
+    print('HSV1 values are:',hsv1[0],hsv1[1],hsv1[2])
+    print('HSV2 values are:',hsv2[0],hsv2[1],hsv2[2])
     b_dist = abs(colour1[0] - colour2[0])
     g_dist = abs(colour1[1] - colour2[1])
     r_dist = abs(colour1[2] - colour2[2])
