@@ -390,7 +390,7 @@ def colourDist(colour1, colour2):
     #print(h_dist,s_dist,v_dist)
     sum_hsv = h_dist + s_dist + v_dist
     #euclidean_dist = np.sqrt((b_dist)**2 + (g_dist)**2 + (r_dist)**2)
-    return b_dist, g_dist, r_dist, sum_bgr, sum_hsv#euclidean_dist 
+    return b_dist, g_dist, r_dist, sum_hsv# sum_hsv#euclidean_dist 
 
 
 def colourClosestDist(point1, curve1, colour1, curve2, colour_curve2):
@@ -404,8 +404,8 @@ def colourClosestDist(point1, curve1, colour1, curve2, colour_curve2):
             min_dist = e_dist
             min_index = index2
     colour2 = colour_curve2[min_index]
-    b_dist, g_dist, r_dist, e_dist, hsv_dist = colourDist(colour1, colour2)
-    return e_dist, hsv_dist, colour2
+    b_dist, g_dist, r_dist, e_dist = colourDist(colour1, colour2)
+    return e_dist, colour2
 
 
 def compareColourContours(contour1, contour2, colour_curve1, colour_curve2, settings):
@@ -421,16 +421,16 @@ def compareColourContours(contour1, contour2, colour_curve1, colour_curve2, sett
     for index in range(len(contour1)):
         point1 = contour1[index]
         colour1 = colour_curve1[index]
-        bgr_dist, hsv_dist, colour2 = colourClosestDist(point1, contour1, colour1, contour2, colour_curve2)
+        bgr_dist, colour2 = colourClosestDist(point1, contour1, colour1, contour2, colour_curve2)
         img_colour[0:10, w * index:w * index + w] = colour1
         img_colour[10:21, w * index:w * index + w] = colour2
         score = score + bgr_dist
-        hsv_score = hsv_score + hsv_dist
-        print('BGR: ',bgr_dist,'HSV:', hsv_dist)
+        #hsv_score = hsv_score + hsv_dist
+        #print('BGR: ',bgr_dist,'HSV:', hsv_dist)
     score = score / len(contour1)
     score = score / 150#441.673  # max possible score is 441, thus convert to range of 0-1.
-    hsv_score = hsv_score / len(contour1)
-    hsv_score = hsv_score / 150
+    #hsv_score = hsv_score / len(contour1)
+    #hsv_score = hsv_score / 150
     print('HSV score is ',hsv_score)
     if settings.show_colour_comparison:
         imshow(imageResize(img_colour, height=height), settings.env)
