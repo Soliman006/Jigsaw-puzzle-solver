@@ -800,7 +800,7 @@ class SolverData:
         for index in range(len(colour_contour_xy1)):
             point1 = colour_contour_xy1[index]
             colour1 = colour_curve1[index]
-            dist, colour2 = colourClosestDist(
+            dist, hsv_dist, colour2 = colourClosestDist(
                 point1, colour_contour_xy1, colour1, colour_contour_xy2, colour_curve2)
             img_colour[0:10, col_w * index:col_w * index + col_w] = colour1
             img_colour[10:21, col_w * index:col_w * index + col_w] = colour2
