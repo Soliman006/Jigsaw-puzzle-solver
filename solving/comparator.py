@@ -376,8 +376,8 @@ def colourDist(colour1, colour2):
     hsv2 = hsv2[0][0]
     hsv1 = cvhsv_to_hsv(hsv1[0],hsv1[1],hsv1[2])
     hsv2 = cvhsv_to_hsv(hsv2[0],hsv2[1],hsv2[2])
-    print('HSV1 values are:',hsv1[0],hsv1[1],hsv1[2])
-    print('HSV2 values are:',hsv2[0],hsv2[1],hsv2[2])
+    #print('HSV1 values are:',hsv1[0],hsv1[1],hsv1[2])
+    #print('HSV2 values are:',hsv2[0],hsv2[1],hsv2[2])
     b_dist = abs(colour1[0] - colour2[0])
     g_dist = abs(colour1[1] - colour2[1])
     r_dist = abs(colour1[2] - colour2[2])
@@ -387,7 +387,7 @@ def colourDist(colour1, colour2):
         h_dist = 360 - h_dist
     s_dist = abs(hsv1[1] - hsv2[1])
     v_dist = abs(hsv1[2] - hsv2[2])
-    print(h_dist,s_dist,v_dist)
+    #print(h_dist,s_dist,v_dist)
     sum_hsv = h_dist + s_dist + v_dist
     #euclidean_dist = np.sqrt((b_dist)**2 + (g_dist)**2 + (r_dist)**2)
     return b_dist, g_dist, r_dist, sum_bgr, sum_hsv#euclidean_dist 
