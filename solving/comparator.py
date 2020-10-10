@@ -437,7 +437,7 @@ def compareColourContours(contour1, contour2, colour_curve1, colour_curve2, sett
         print(" ")
     return score
 
-def cvhsv_to_hsv(self, cvh, cvs,cvv):
+def cvhsv_to_hsv(cvh, cvs,cvv):
     h = int(359 * cvh / 180)
     s = int(100 * cvs / 255)
     v = int(100 * cvv / 255)
