@@ -154,7 +154,6 @@ def retrieveExample(i):
         #settings.shape_score_frac = 0.6
         #settings.corner_thresh = 1.5
         settings.score_colour_thresh = 0.6
-        settings.
         settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
         settings.helper_threshold = 1.3 # all options within this multiplier are considered
         settings.max_options = 2
