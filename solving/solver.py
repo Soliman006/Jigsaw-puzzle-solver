@@ -109,6 +109,8 @@ class SolverData:
         self.flags.cornerfound = False
         
     def fullsolver_columns(self):
+        print('')
+        print('SOLVING PROCESS INITIATED')
         self.solveborder2()
         if self.num_pieces > 400:
             self.settings.helper_threshold = 1.04
