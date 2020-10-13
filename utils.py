@@ -87,24 +87,102 @@ def retrieveExample(i):
     elif i == 8:
         settings.bg_thresh_low = hsv_to_cvhsv(23, 3, 60)
         settings.bg_thresh_high = hsv_to_cvhsv(60, 15, 95)
-    elif i == 10:
-        settings.convexity_epsilon = 1000
-    elif i == 11:
-        settings.e_contour_smoothing = 0
-        settings.score_thresh = 2  # if no options are under this then it trigger the backtracker
-        settings.helper_threshold = 1.5  # all options within this multiplier are considered
-        settings.max_options = 2
-        settings.interpolate_ref = False
-        settings.interpolate_cand = False
+        
+    elif i == 10: # dataset 10 216 piece
+        settings.compute_height = 3000
         settings.convexity_epsilon = 1500
-        settings.inc = 3
-    elif i == 12:
-        settings.e_contour_smoothing = 0
-        settings.max_options = 3
-        settings.interpolate_ref = False
-        settings.interpolate_cand = False
-        settings.convexity_epsilon = 1700
-        settings.inc = 4
+        #settings.bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        #settings.bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.e_contour_smoothing = 0.5
+        settings.inc = 5
+        #settings.shape_score_frac = 0.7
+        #settings.score_colour_thresh = 0.7
+        settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
+        settings.helper_threshold = 1.2 # all options within this multiplier are considered
+        settings.max_options = 2
+
+
+    elif i == 11: # dataset 11 96 piece
+        #settings.bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        #settings.bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.compute_height = 2000
+        settings.convexity_epsilon = 1500
+        settings.e_contour_smoothing = 0.5
+        settings.inc = 5
+        #settings.shape_score_frac = 0.6
+        #settings.score_colour_thresh = 0.6
+        settings.score_thresh = 0.3 # if no options are under this then it triggers the backtracker
+        settings.helper_threshold = 1.3 # all options within this multiplier are considered
+        settings.max_options = 1
+
+
+    elif i == 12: #dataset 12 88 piece
+        #settings.bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        #settings.bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.compute_height = 2500
+        settings.convexity_epsilon = 1500
+        settings.e_contour_smoothing = 0.5
+        settings.inc = 5
+        #settings.shape_score_frac = 0.6
+        #settings.corner_thresh = 1.5
+        settings.score_colour_thresh = 1
+        settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
+        settings.helper_threshold = 1.3 # all options within this multiplier are considered
+        settings.max_options = 2
+
+    elif i == 13: # dataset 13 140 piece
+        #settings.bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        #settings.bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.compute_height = 3000
+        settings.convexity_epsilon = 1500
+        settings.e_contour_smoothing = 0.5
+        settings.inc = 5
+        #settings.shape_score_frac = 0.6
+        #settings.corner_thresh = 1.5
+        settings.score_colour_thresh = 0.7
+        settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
+        settings.helper_threshold = 1.3 # all options within this multiplier are considered
+        settings.max_options = 2
+
+    elif i == 14: # dataset 14 532 piece
+        #settings.bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        #settings.bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.compute_height = 4000
+        settings.convexity_epsilon = 1500
+        settings.e_contour_smoothing = 0.5
+        settings.inc = 5
+        #settings.shape_score_frac = 0.6
+        #settings.corner_thresh = 1.5
+        settings.score_colour_thresh = 0.6
+        settings.
+        settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
+        settings.helper_threshold = 1.3 # all options within this multiplier are considered
+        settings.max_options = 2
+
+    elif i == 15: # dataset 15 330 piece
+        settings.compute_height = 3500
+        settings.convexity_epsilon = 1500
+        #settings.bg_thresh_low = hsv_to_cvhsv(0, 0, 0)
+        #settings.bg_thresh_high = hsv_to_cvhsv(360, 1, 1)
+        settings.e_contour_smoothing = 0.5
+        settings.inc = 5
+        #settings.shape_score_frac = 0.7
+        #settings.score_colour_thresh = 0.7
+        settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
+        settings.helper_threshold = 1.2 # all options within this multiplier are considered
+        settings.max_options = 2
+
+    '''elif i == 17: #dataset 17 49 7x7
+        settings.bg_thresh_low = hsv_to_cvhsv(100, 40, 10)
+        settings.bg_thresh_high = hsv_to_cvhsv(150, 80, 70)
+        settings.convexity_epsilon = 2500
+        settings.e_contour_smoothing = 0.5
+        settings.inc = 5
+        #settings.shape_score_frac = 0.6
+        settings.score_colour_thresh = 1
+        settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
+        settings.helper_threshold = 1.3 # all options within this multiplier are considered
+        settings.max_options = 2'''
     return img, settings
 
 
