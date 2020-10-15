@@ -182,6 +182,17 @@ def retrieveExample(i):
         settings.score_thresh = 0.4 # if no options are under this then it triggers the backtracker
         settings.helper_threshold = 1.3 # all options within this multiplier are considered
         settings.max_options = 2'''
+        
+        elif i == 24:
+            settings.bg_thresh_low = hsv_to_cvhsv(85, 30, 30)
+            settings.bg_thresh_high = hsv_to_cvhsv(140, 100, 100)
+            settings.e_contour_smoothing = 0.5
+            settings.score_thresh = 1.9  # if no options are under this then it trigger the backtracker
+            settings.helper_threshold = 1.3  # all options within this multiplier are considered
+            settings.max_options = 2
+            settings.interpolate_ref = False
+            settings.interpolate_cand = False
+        
     return img, settings
 
 
