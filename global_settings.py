@@ -31,6 +31,7 @@ class globalSettings:
         self.show_colour_extraction_progress = True
 
         # solving display settings
+        self.show_current_solution = True
         self.show_incremental_solution = True
         self.show_leg_BGR = True
         self.show_colour_comparison = True
