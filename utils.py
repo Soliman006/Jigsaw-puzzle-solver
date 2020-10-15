@@ -171,6 +171,16 @@ def retrieveExample(i):
         settings.helper_threshold = 1.2 # all options within this multiplier are considered
         settings.max_options = 2
 
+    elif i == 24:
+        settings.bg_thresh_low = hsv_to_cvhsv(85, 30, 30)
+        settings.bg_thresh_high = hsv_to_cvhsv(140, 100, 100)
+        settings.e_contour_smoothing = 0.5
+        settings.score_thresh = 1.9  # if no options are under this then it trigger the backtracker
+        settings.helper_threshold = 1.3  # all options within this multiplier are considered
+        settings.max_options = 2
+        settings.interpolate_ref = False
+        settings.interpolate_cand = False
+        
     '''elif i == 17: #dataset 17 49 7x7
         settings.bg_thresh_low = hsv_to_cvhsv(100, 40, 10)
         settings.bg_thresh_high = hsv_to_cvhsv(150, 80, 70)
@@ -183,15 +193,6 @@ def retrieveExample(i):
         settings.helper_threshold = 1.3 # all options within this multiplier are considered
         settings.max_options = 2'''
         
-    elif i == 24:
-        settings.bg_thresh_low = hsv_to_cvhsv(85, 30, 30)
-        settings.bg_thresh_high = hsv_to_cvhsv(140, 100, 100)
-        settings.e_contour_smoothing = 0.5
-        settings.score_thresh = 1.9  # if no options are under this then it trigger the backtracker
-        settings.helper_threshold = 1.3  # all options within this multiplier are considered
-        settings.max_options = 2
-        settings.interpolate_ref = False
-        settings.interpolate_cand = False
         
     return img, settings
 
