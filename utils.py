@@ -113,7 +113,7 @@ def retrieveExample(i):
         #settings.score_colour_thresh = 0.6
         settings.score_thresh = 0.3 # if no options are under this then it triggers the backtracker
         settings.helper_threshold = 1.3 # all options within this multiplier are considered
-        settings.max_options = 1
+        settings.max_options = 2
 
 
     elif i == 12: #dataset 12 88 piece
