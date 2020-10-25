@@ -112,6 +112,8 @@ class SolverData:
         print('')
         print('SOLVING PROCESS INITIATED')
         self.solveborder2()
+        if len(self.solution) < 2*(self.data.puzzle_columns-2)+2*(self.data.puzzle_rows):
+            return
         if self.num_pieces > 400:
             self.settings.helper_threshold = 1.04
         for i in range(1,self.data.puzzle_columns-1):
@@ -156,6 +158,9 @@ class SolverData:
                 print()'''
         best_score_index = np.argmin(best_scores)
         best_overall_edge = best_edges[best_score_index]
+        if best_scores[best_score_index] == 10:
+            print("Puzzle cannot be solved with current parameters")
+            return
         for i in best_overall_edge:
             self.solution.append(i)
         prog = len(self.solution)/len(self.data.piece_contours)*100
@@ -189,6 +194,9 @@ class SolverData:
                 print()'''
         best_score_index = np.argmin(best_scores)
         best_overall_edge = best_edges[best_score_index]
+        if best_scores[best_score_index] == 10:
+            print("Puzzle cannot be solved with current parameters")
+            return
         for i in best_overall_edge:
             self.solution.append(i)
         prog = len(self.solution)/len(self.data.piece_contours)*100
@@ -226,6 +234,9 @@ class SolverData:
         best_edges.append(best_edge)
         best_score_index = np.argmin(best_scores)
         best_overall_edge = best_edges[best_score_index]
+        if best_scores[best_score_index] == 10:
+            print("Puzzle cannot be solved with current parameters")
+            return
         for i in best_overall_edge:
             self.solution.append(i)
         prog = len(self.solution)/len(self.data.piece_contours)*100
@@ -238,6 +249,9 @@ class SolverData:
             best_edge, best_score = self.solvebestpartialedge(self.data.puzzle_rows-1)
         else:
             best_edge, best_score = self.solvebestpartialedge(0)
+        if best_score == 10:
+            print("Puzzle cannot be solved with current parameters")
+            return
         for i in best_edge:
             self.solution.append(i)
         prog = len(self.solution)/len(self.data.piece_contours)*100
