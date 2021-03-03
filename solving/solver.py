@@ -107,7 +107,29 @@ class SolverData:
         self.flags.solvable = 1
         self.flags.backtrack = 0
         self.flags.cornerfound = False
-        
+    
+    def fullsolver_mix(self):
+        print('')
+        print('SOLVING PROCESS INITIATED')
+        self.solveborder2()
+        if len(self.solution) < 2*(self.data.puzzle_columns-2)+2*(self.data.puzzle_rows):
+            return
+        if self.num_pieces > 400:
+            self.settings.helper_threshold = 1.04
+        for i in range(1,self.data.puzzle_columns-1):
+            self.hardReset()
+            self.placecurrentsolution()
+            self.flags.solvingborder = False
+            best_row, best_row_score = self.solvebestcolumn(i)
+            if len(best_row) == 0:
+                return
+            for j in best_row:
+                self.solution.append(j)
+            prog = len(self.solution)/len(self.data.piece_contours)*100
+            print(f'Progress: {prog:.0f}%')
+            if self.settings.show_current_solution:
+                displaySolution(createSolution(self.data, self), self.data.av_length, self.x_limit, self.y_limit, self.settings)
+    
     def fullsolver_columns(self):
         print('')
         print('SOLVING PROCESS INITIATED')
@@ -434,6 +456,73 @@ class SolverData:
         for i in best_edge:
             print(i.options[i.choice].piece)'''
         return best_column, best_score
+    
+    def solvebestrow(self,row):
+        sum_score = 0
+        potential_row = []
+        while self.flags.solvable != 0:
+            while len(self.memory) != self.data.puzzle_columns-2:
+                space = [len(self.memory)+1,row]
+                x = space[0]
+                y = space[1]
+                if self.settings.show_current_space_text:
+                    print(" ")
+                    print("Now solving for space", space)
+                '''if self.loc_type[y][x] == 2:  # corner
+                    if len(self.memory) == 0:  # starting piece
+                        piece = corner
+                        corner_index = corner
+                        piece = self.processed_corners[corner_index]
+                        rotation = loc_type_detail_to_rotation(self.loc_type_detail[y][x])
+                        score = 0
+                        option = Option(piece, rotation, score)
+                        options = []
+                        options.append(option)
+                        choice = 0
+                        step = Step(space, options, choice)
+                    else:
+                        self.flags.cornerfound = True
+                        continue
+                if self.loc_type[y][x] == 1:  # edge
+                    step = self.solveSpace(space, self.processed_edges)'''
+                step = self.solveSpace(space, self.processed_interior)
+                if self.flags.backtrack:
+                    self.flags.backtrack = 0    
+                    final_step, final_option = self.backtrace(self.memory)
+                    if self.flags.solvable == 0:
+                        break 
+                    else:
+                        self.backtracker(final_step, final_option)
+                        continue
+                # Place in puzzle and update
+                self.place(step)
+                if self.settings.show_solver_progress_text:
+                    print("Progress:", self.placement_num, "/", self.num_pieces)
+                if self.settings.show_incremental_solution:
+                    displaySolution(createSolution(self.data, self), self.data.av_length, self.x_limit, self.y_limit, self.settings)
+            
+            if self.flags.solvable == 0:
+                break
+            else:
+                potential_row = list(self.memory)
+                self.possible_rows.append(potential_row)
+                for i in range(len(self.memory)):
+                    sum_score = sum_score + self.memory[i].options[self.memory[i].choice].score
+                self.row_scores.append(sum_score)
+                sum_score = 0
+                final_step, final_option = self.backtrace(self.memory)
+                if self.flags.solvable == 0:
+                    break
+                self.backtracker(final_step, final_option)
+                self.flags.cornerfound = False
+        
+        best_score = min(self.row_scores)
+        best_score_index = np.argmin(self.row_scores)
+        best_row = self.possible_rows[best_score_index]
+        '''print('best border is number',best_score_index+1,'and the pieces are:')
+        for i in best_edge:
+            print(i.options[i.choice].piece)'''
+        return best_row, best_score
     
     def solveinterior_column1(self):
         self.hardReset()
