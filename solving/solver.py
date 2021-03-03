@@ -116,16 +116,27 @@ class SolverData:
             return
         if self.num_pieces > 400:
             self.settings.helper_threshold = 1.04
-        for i in range(1,self.data.puzzle_columns-1):
+        num_col = 0
+        num_row = 0
+        while(len(self.solution)<len(self.data.piece_contours)):
             self.hardReset()
             self.placecurrentsolution()
             self.flags.solvingborder = False
-            best_row, best_row_score = self.solvebestcolumn(i)
-            if len(best_row) == 0:
-                return
-            for j in best_row:
-                self.solution.append(j)
-            prog = len(self.solution)/len(self.data.piece_contours)*100
+            if self.data.puzzle_columns-num_col >= self.data.puzzle_rows-num_row:
+                num_col = num_col+1
+                best_row, best_row_score = self.solvebestcolumn(num_col,num_row)
+                if len(best_row) == 0:
+                    return
+                for j in best_row:
+                    self.solution.append(j)
+            else:
+                num_row = num_row+1
+                best_row, best_row_score = self.solvebestrow(num_row,num_col)
+                if len(best_row) == 0:
+                    return
+                for j in best_row:
+                    self.solution.append(j)
+                prog = len(self.solution)/len(self.data.piece_contours)*100
             print(f'Progress: {prog:.0f}%')
             if self.settings.show_current_solution:
                 displaySolution(createSolution(self.data, self), self.data.av_length, self.x_limit, self.y_limit, self.settings)
@@ -142,7 +153,7 @@ class SolverData:
             self.hardReset()
             self.placecurrentsolution()
             self.flags.solvingborder = False
-            best_row, best_row_score = self.solvebestcolumn(i)
+            best_row, best_row_score = self.solvebestcolumn(i,0)
             if len(best_row) == 0:
                 return
             for j in best_row:
@@ -401,12 +412,12 @@ class SolverData:
             best_edge = self.possible_edges[best_score_index]
         return best_edge, best_score
     
-    def solvebestcolumn(self,column):
+    def solvebestcolumn(self,column,row):
         sum_score = 0
         potential_column = []
         while self.flags.solvable != 0:
             while len(self.memory) != self.data.puzzle_rows-2:
-                space = [column,len(self.memory)+1]
+                space = [column,row+len(self.memory)+1]
                 x = space[0]
                 y = space[1]
                 if self.settings.show_current_space_text:
@@ -457,12 +468,12 @@ class SolverData:
             print(i.options[i.choice].piece)'''
         return best_column, best_score
     
-    def solvebestrow(self,row):
+    def solvebestrow(self,row,column):
         sum_score = 0
         potential_row = []
         while self.flags.solvable != 0:
             while len(self.memory) != self.data.puzzle_columns-2:
-                space = [len(self.memory)+1,row]
+                space = [column+len(self.memory)+1,row]
                 x = space[0]
                 y = space[1]
                 if self.settings.show_current_space_text:
