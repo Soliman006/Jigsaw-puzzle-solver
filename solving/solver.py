@@ -416,7 +416,7 @@ class SolverData:
         sum_score = 0
         potential_column = []
         while self.flags.solvable != 0:
-            while len(self.memory) != self.data.puzzle_rows-2:
+            while len(self.memory) != self.data.puzzle_rows-2-row:
                 space = [column,row+len(self.memory)+1]
                 x = space[0]
                 y = space[1]
@@ -472,7 +472,7 @@ class SolverData:
         sum_score = 0
         potential_row = []
         while self.flags.solvable != 0:
-            while len(self.memory) != self.data.puzzle_columns-2:
+            while len(self.memory) != self.data.puzzle_columns-2-column:
                 space = [column+len(self.memory)+1,row]
                 x = space[0]
                 y = space[1]
