@@ -136,7 +136,7 @@ class SolverData:
                     return
                 for j in best_row:
                     self.solution.append(j)
-                prog = len(self.solution)/len(self.data.piece_contours)*100
+            prog = len(self.solution)/len(self.data.piece_contours)*100
             print(f'Progress: {prog:.0f}%')
             if self.settings.show_current_solution:
                 displaySolution(createSolution(self.data, self), self.data.av_length, self.x_limit, self.y_limit, self.settings)
